@@ -111,8 +111,7 @@ internal object DemoData {
         BEVERAGES.values.distinct().forEach { name -> CategoryRecord(name = name).executeInsert() }
 
         /// generate reviews
-        val r = Random
-        val reviewCount: Int = 20 + r.nextInt(30)
+        val reviewCount: Int = 20 + Random.nextInt(30)
         val beverages: List<MutableMap.MutableEntry<String, String>> = BEVERAGES.entries.toList()
 
         for (i in 0 until reviewCount) {
@@ -120,12 +119,14 @@ internal object DemoData {
             val beverage: MutableMap.MutableEntry<String, String> = beverages.random()
             val category: CategoryRecord = CATEGORY.getByName(beverage.value)
             review.name = beverage.key
-            val testDay: LocalDate = LocalDate.of(1930 + r.nextInt(88),
-                    1 + r.nextInt(12), 1 + r.nextInt(28))
+            val testDay: LocalDate = LocalDate.of(
+                1930 + Random.nextInt(88),
+                1 + Random.nextInt(12),
+                1 + Random.nextInt(28))
             review.date = testDay
-            review.score = (1 + r.nextInt(5)).toByte()
+            review.score = (1 + Random.nextInt(5)).toByte()
             review.category = category.id
-            review.count = (1 + r.nextInt(15)).toByte()
+            review.count = (1 + Random.nextInt(15)).toByte()
             review.executeInsert()
         }
     }
