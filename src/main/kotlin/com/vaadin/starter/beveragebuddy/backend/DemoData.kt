@@ -1,6 +1,5 @@
 package com.vaadin.starter.beveragebuddy.backend
 
-import com.github.vokorm.db
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
@@ -9,20 +8,20 @@ import kotlin.random.Random
 
 internal object DemoData {
 
-    private val MINERAL_WATER = "Mineral Water"
-    private val SOFT_DRINK = "Soft Drink"
-    private val COFFEE = "Coffee"
-    private val TEA = "Tea"
-    private val DAIRY = "Dairy"
-    private val CIDER = "Cider"
-    private val BEER = "Beer"
-    private val WINE = "Wine"
-    private val OTHER = "Other"
+    private const val MINERAL_WATER = "Mineral Water"
+    private const val SOFT_DRINK = "Soft Drink"
+    private const val COFFEE = "Coffee"
+    private const val TEA = "Tea"
+    private const val DAIRY = "Dairy"
+    private const val CIDER = "Cider"
+    private const val BEER = "Beer"
+    private const val WINE = "Wine"
+    private const val OTHER = "Other"
 
     /**
      * Maps beverage name to a beverage category.
      */
-    val BEVERAGES: MutableMap<String, String> = LinkedHashMap()
+    private val BEVERAGES: MutableMap<String, String> = LinkedHashMap()
 
     init {
         listOf("Evian",
@@ -30,17 +29,17 @@ internal object DemoData {
                 "Veen",
                 "San Pellegrino",
                 "Perrier")
-                .forEach { name -> BEVERAGES.put(name, MINERAL_WATER) }
+                .forEach { name -> BEVERAGES[name] = MINERAL_WATER }
 
         listOf("Coca-Cola",
                 "Fanta",
                 "Sprite")
-                .forEach { name -> BEVERAGES.put(name, SOFT_DRINK) }
+                .forEach { name -> BEVERAGES[name] = SOFT_DRINK }
 
         listOf("Maxwell Ready-to-Drink Coffee",
                 "Nescafé Gold",
                 "Starbucks East Timor Tatamailau")
-                .forEach { name -> BEVERAGES.put(name, COFFEE) }
+                .forEach { name -> BEVERAGES[name] = COFFEE }
 
         listOf("Prince Of Peace Organic White Tea",
                 "Pai Mu Tan White Peony Tea",
@@ -49,7 +48,7 @@ internal object DemoData {
                 "Twinings Earl Grey",
                 "Twinings Lady Grey",
                 "Classic Indian Chai")
-                .forEach { name -> BEVERAGES.put(name, TEA) }
+                .forEach { name -> BEVERAGES[name] = TEA }
 
         listOf("Cow's Milk",
                 "Goat's Milk",
@@ -57,7 +56,7 @@ internal object DemoData {
                 "Salt Lassi",
                 "Mango Lassi",
                 "Airag")
-                .forEach { name -> BEVERAGES.put(name, DAIRY) }
+                .forEach { name -> BEVERAGES[name] = DAIRY }
 
         listOf("Crowmoor Extra Dry Apple",
                 "Golden Cap Perry",
@@ -71,7 +70,7 @@ internal object DemoData {
                 "Angry Orchard Stone Dry",
                 "Walden Hollow",
                 "Fox Barrel Wit Pear")
-                .forEach { name -> BEVERAGES.put(name, CIDER) }
+                .forEach { name -> BEVERAGES[name] = CIDER }
 
         listOf("Budweiser",
                 "Miller",
@@ -94,12 +93,12 @@ internal object DemoData {
                 "Lapin Kulta IVA",
                 "Kukko Pils III",
                 "Finlandia Sahti")
-                .forEach { name -> BEVERAGES.put(name, BEER) }
+                .forEach { name -> BEVERAGES[name] = BEER }
 
         listOf("Jacob's Creek Classic Shiraz",
                 "Chateau d’Yquem Sauternes",
                 "Oremus Tokaji Aszú 5 Puttonyos")
-                .forEach { name -> BEVERAGES.put(name, WINE) }
+                .forEach { name -> BEVERAGES[name] = WINE }
 
         listOf("Pan Galactic Gargle Blaster",
                 "Mead",
@@ -119,7 +118,7 @@ internal object DemoData {
         for (i in 0 until reviewCount) {
             val review = ReviewRecord()
             val beverage: MutableMap.MutableEntry<String, String> = beverages.random()
-            val category: CategoryRecord = create.fetchSingle(CATEGORY, CATEGORY.NAME.eq(beverage.value))
+            val category: CategoryRecord = CATEGORY.getByName(beverage.value)
             review.name = beverage.key
             val testDay: LocalDate = LocalDate.of(1930 + r.nextInt(88),
                     1 + r.nextInt(12), 1 + r.nextInt(28))
