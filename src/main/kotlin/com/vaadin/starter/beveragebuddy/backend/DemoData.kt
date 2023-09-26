@@ -1,6 +1,9 @@
 package com.vaadin.starter.beveragebuddy.backend
 
 import com.github.vokorm.db
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -104,9 +107,9 @@ internal object DemoData {
                 .forEach { name -> BEVERAGES[name] = OTHER }
     }
 
-    fun createDemoData() = db {
+    fun createDemoData() = db2 {
         // generate categories
-        BEVERAGES.values.distinct().forEach { name -> Category(name = name).save() }
+        BEVERAGES.values.distinct().forEach { name -> create.executeInsert(CategoryRecord(name = name)) }
 
         /// generate reviews
         val r = Random
@@ -114,17 +117,17 @@ internal object DemoData {
         val beverages: List<MutableMap.MutableEntry<String, String>> = BEVERAGES.entries.toList()
 
         for (i in 0 until reviewCount) {
-            val review = Review()
+            val review = ReviewRecord()
             val beverage: MutableMap.MutableEntry<String, String> = beverages.random()
-            val category: Category = Category.getByName(beverage.value)
+            val category: CategoryRecord = create.fetchSingle(CATEGORY, CATEGORY.NAME.eq(beverage.value))
             review.name = beverage.key
             val testDay: LocalDate = LocalDate.of(1930 + r.nextInt(88),
                     1 + r.nextInt(12), 1 + r.nextInt(28))
             review.date = testDay
-            review.score = 1 + r.nextInt(5)
+            review.score = (1 + r.nextInt(5)).toByte()
             review.category = category.id
-            review.count = 1 + r.nextInt(15)
-            review.save()
+            review.count = (1 + r.nextInt(15)).toByte()
+            create.executeInsert(review)
         }
     }
 }
