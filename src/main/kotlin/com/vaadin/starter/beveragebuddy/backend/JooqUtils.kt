@@ -1,10 +1,10 @@
 package com.vaadin.starter.beveragebuddy.backend
 
-import com.github.vokorm.PersistenceContext
 import com.github.vokorm.db
 import org.jdbi.v3.core.Handle
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
+import org.jooq.TableRecord
 import org.jooq.impl.DSL
 import java.sql.Connection
 
@@ -29,3 +29,8 @@ public class JooqContext(
      */
     public val jdbcConnection: Connection get() = handle.connection
 }
+
+/**
+ * See [DSLContext.executeInsert].
+ */
+fun TableRecord<*>.executeInsert(): Int = db2 { create.executeInsert(this@executeInsert) }
