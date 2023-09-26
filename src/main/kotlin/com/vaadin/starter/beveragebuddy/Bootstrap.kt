@@ -17,9 +17,6 @@ import jakarta.servlet.ServletContextListener
 import jakarta.servlet.annotation.WebListener
 import org.flywaydb.core.Flyway
 import org.h2.Driver
-import org.jooq.codegen.GenerationTool
-import org.jooq.meta.jaxb.*
-import org.jooq.meta.jaxb.Target
 import org.slf4j.LoggerFactory
 
 /**
@@ -59,30 +56,8 @@ class Bootstrap: ServletContextListener {
         flyway.migrate()
 
         // generate JOOQ files
-        val configuration: Configuration = Configuration()
-            .withJdbc(
-                Jdbc()
-                    .withDriver(Driver::class.java.name)
-                    .withUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1")
-                    .withUser("sa")
-                    .withPassword("")
-            )
-            .withGenerator(
-                Generator()
-                    .withName("org.jooq.codegen.KotlinGenerator")
-                    .withDatabase(
-                        Database()
-                            .withName("org.jooq.meta.h2.H2Database")
-                            .withIncludes(".*")
-                            .withInputSchema("PUBLIC")
-                    )
-                    .withTarget(
-                        Target()
-                            .withPackageName("com.vaadin.starter.beveragebuddy.backend.jooq")
-                            .withDirectory("src/main/kotlin")
-                    )
-            )
-        GenerationTool.generate(configuration)
+        log.info("Generating JOOQ files")
+        JooqGenerator.generate()
 
         // pre-populates the database with a demo data
         log.info("Populating database with testing data")
