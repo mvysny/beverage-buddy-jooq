@@ -4,6 +4,8 @@
 # Beverage Buddy App Starter for Vaadin
 :coffee::tea::sake::baby_bottle::beer::cocktail::tropical_drink::wine_glass:
 
+** NOTE: CONVERSION TO JOOQ ONGOING **. Please wait until the conversion has been finalized properly.
+
 This is a [Vaadin-on-Kotlin](http://vaadinonkotlin.eu) example application,
 used to demonstrate features of the Vaadin Flow Java framework.
 A full-stack app: uses the H2 database instead of a dummy service. Requires Java 17+.
