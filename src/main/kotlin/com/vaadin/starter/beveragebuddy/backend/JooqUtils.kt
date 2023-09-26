@@ -1,10 +1,10 @@
 package com.vaadin.starter.beveragebuddy.backend
 
 import com.github.vokorm.db
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import org.jdbi.v3.core.Handle
-import org.jooq.DSLContext
-import org.jooq.SQLDialect
-import org.jooq.TableRecord
+import org.jooq.*
 import org.jooq.impl.DSL
 import java.sql.Connection
 
@@ -34,3 +34,13 @@ public class JooqContext(
  * See [DSLContext.executeInsert].
  */
 fun TableRecord<*>.executeInsert(): Int = db2 { create.executeInsert(this@executeInsert) }
+
+@Suppress("UNCHECKED_CAST")
+fun <R : Record> Table<R>.getById(id: Long): R = db2 {
+    val idField = javaClass.getDeclaredField("ID")
+        .get(this@getById) as TableField<R, Long?>
+    create.fetchSingle(this@getById, idField.eq(id))
+}
+
+fun Category.getByName(name: String): CategoryRecord =
+    db2 { create.fetchSingle(this@getByName, NAME.eq(name)) }
