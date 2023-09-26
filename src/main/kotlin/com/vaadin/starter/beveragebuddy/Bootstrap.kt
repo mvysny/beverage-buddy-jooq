@@ -2,23 +2,25 @@ package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributools.addMetaTag
 import com.gitlab.mvysny.jdbiorm.JdbiOrm
-import com.vaadin.flow.component.dependency.CssImport
 import com.vaadin.flow.component.page.AppShellConfigurator
 import com.vaadin.flow.component.page.BodySize
 import com.vaadin.flow.component.page.Viewport
 import com.vaadin.flow.server.ServiceInitEvent
 import com.vaadin.flow.server.VaadinServiceInitListener
 import com.vaadin.flow.theme.Theme
-import eu.vaadinonkotlin.VaadinOnKotlin
 import com.vaadin.starter.beveragebuddy.backend.DemoData
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.flywaydb.core.Flyway
-import org.h2.Driver
-import org.slf4j.LoggerFactory
+import eu.vaadinonkotlin.VaadinOnKotlin
 import jakarta.servlet.ServletContextEvent
 import jakarta.servlet.ServletContextListener
 import jakarta.servlet.annotation.WebListener
+import org.flywaydb.core.Flyway
+import org.h2.Driver
+import org.jooq.codegen.GenerationTool
+import org.jooq.meta.jaxb.*
+import org.jooq.meta.jaxb.Target
+import org.slf4j.LoggerFactory
 
 /**
  * Boots the app:
@@ -55,6 +57,32 @@ class Bootstrap: ServletContextListener {
             .dataSource(JdbiOrm.getDataSource())
             .load()
         flyway.migrate()
+
+        // generate JOOQ files
+        val configuration: Configuration = Configuration()
+            .withJdbc(
+                Jdbc()
+                    .withDriver(Driver::class.java.name)
+                    .withUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1")
+                    .withUser("sa")
+                    .withPassword("")
+            )
+            .withGenerator(
+                Generator()
+                    .withName("org.jooq.codegen.KotlinGenerator")
+                    .withDatabase(
+                        Database()
+                            .withName("org.jooq.meta.h2.H2Database")
+                            .withIncludes(".*")
+                            .withInputSchema("PUBLIC")
+                    )
+                    .withTarget(
+                        Target()
+                            .withPackageName("com.vaadin.starter.beveragebuddy.backend.jooq")
+                            .withDirectory("src/main/kotlin")
+                    )
+            )
+        GenerationTool.generate(configuration)
 
         // pre-populates the database with a demo data
         log.info("Populating database with testing data")

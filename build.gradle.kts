@@ -56,6 +56,9 @@ dependencies {
     // db
     implementation("org.flywaydb:flyway-core:9.22.1")
     implementation("com.h2database:h2:2.2.224") // remove this and replace it with a database driver of your choice.
+    implementation("org.jooq:jooq:${properties["jooqVersion"]}")
+    implementation("org.jooq:jooq-meta:${properties["jooqVersion"]}")
+    implementation("org.jooq:jooq-codegen:${properties["jooqVersion"]}")
 
     // REST
     implementation("eu.vaadinonkotlin:vok-rest:${properties["vokVersion"]}")
