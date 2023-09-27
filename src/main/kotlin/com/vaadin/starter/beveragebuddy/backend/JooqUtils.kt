@@ -3,6 +3,9 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.github.vokorm.db
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
+import jakarta.validation.ConstraintViolationException
+import jakarta.validation.Validation
+import jakarta.validation.Validator
 import org.jdbi.v3.core.Handle
 import org.jooq.*
 import org.jooq.impl.DSL
@@ -15,19 +18,19 @@ import java.sql.Connection
  * Example of use: `db2 { create.query("") }`
  * @param block the block to run in the transaction. Builder-style provides helpful methods and values, e.g. [JooqContext.handle]
  */
-public fun <R> db2(block: JooqContext.() -> R): R = db {
+fun <R> db2(block: JooqContext.() -> R): R = db {
     val ctx = JooqContext(handle, DSL.using(jdbcConnection, SQLDialect.H2))
     ctx.block()
 }
 
-public class JooqContext(
-    public val handle: Handle,
-    public val create: DSLContext
+class JooqContext(
+    val handle: Handle,
+    val create: DSLContext
 ) {
     /**
      * The underlying JDBC connection.
      */
-    public val jdbcConnection: Connection get() = handle.connection
+    val jdbcConnection: Connection get() = handle.connection
 }
 
 /**
@@ -44,3 +47,25 @@ fun <R : Record> Table<R>.getById(id: Long): R = db2 {
 
 fun Category.getByName(name: String): CategoryRecord =
     db2 { create.fetchSingle(this@getByName, NAME.eq(name)) }
+
+object JooqUtils {
+    @Volatile
+    var validator: Validator = Validation.buildDefaultValidatorFactory().validator
+}
+
+interface HasValidity {
+    val isValid: Boolean
+        get() = try {
+            validate()
+            true
+        } catch (ex: ConstraintViolationException) {
+            false
+        }
+
+    fun validate() {
+        val violations = JooqUtils.validator.validate<Any>(this)
+        if (violations.isNotEmpty()) {
+            throw ConstraintViolationException(violations)
+        }
+    }
+}
