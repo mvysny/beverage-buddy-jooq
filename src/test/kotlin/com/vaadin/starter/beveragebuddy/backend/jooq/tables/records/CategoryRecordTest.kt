@@ -1,6 +1,7 @@
 package com.vaadin.starter.beveragebuddy.backend.jooq.tables.records
 
 import com.github.mvysny.dynatest.DynaTest
+import com.vaadin.starter.beveragebuddy.backend.isValid
 import kotlin.test.expect
 
 class CategoryRecordTest : DynaTest({

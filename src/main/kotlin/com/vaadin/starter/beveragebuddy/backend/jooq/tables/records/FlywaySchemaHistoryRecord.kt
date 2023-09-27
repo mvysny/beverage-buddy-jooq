@@ -6,6 +6,9 @@ package com.vaadin.starter.beveragebuddy.backend.jooq.tables.records
 
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.FlywaySchemaHistory
 
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
+
 import java.time.LocalDateTime
 
 import org.jooq.Field
@@ -21,22 +24,30 @@ import org.jooq.impl.UpdatableRecordImpl
 @Suppress("UNCHECKED_CAST")
 open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistoryRecord>(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY), Record10<Int?, String?, String?, String?, String?, Int?, String?, LocalDateTime?, Int?, Boolean?> {
 
+    @get:NotNull
     open var installedRank: Int?
         set(value): Unit = set(0, value)
         get(): Int? = get(0) as Int?
 
+    @get:Size(max = 50)
     open var version: String?
         set(value): Unit = set(1, value)
         get(): String? = get(1) as String?
 
+    @get:NotNull
+    @get:Size(max = 200)
     open var description: String?
         set(value): Unit = set(2, value)
         get(): String? = get(2) as String?
 
+    @get:NotNull
+    @get:Size(max = 20)
     open var type: String?
         set(value): Unit = set(3, value)
         get(): String? = get(3) as String?
 
+    @get:NotNull
+    @get:Size(max = 1000)
     open var script: String?
         set(value): Unit = set(4, value)
         get(): String? = get(4) as String?
@@ -45,6 +56,8 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         set(value): Unit = set(5, value)
         get(): Int? = get(5) as Int?
 
+    @get:NotNull
+    @get:Size(max = 100)
     open var installedBy: String?
         set(value): Unit = set(6, value)
         get(): String? = get(6) as String?
@@ -53,10 +66,12 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         set(value): Unit = set(7, value)
         get(): LocalDateTime? = get(7) as LocalDateTime?
 
+    @get:NotNull
     open var executionTime: Int?
         set(value): Unit = set(8, value)
         get(): Int? = get(8) as Int?
 
+    @get:NotNull
     open var success: Boolean?
         set(value): Unit = set(9, value)
         get(): Boolean? = get(9) as Boolean?

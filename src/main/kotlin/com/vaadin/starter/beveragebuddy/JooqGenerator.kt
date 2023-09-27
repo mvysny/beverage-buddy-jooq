@@ -2,10 +2,7 @@ package com.vaadin.starter.beveragebuddy
 
 /*
 import org.jooq.codegen.GenerationTool
-import org.jooq.meta.jaxb.Configuration
-import org.jooq.meta.jaxb.Database
-import org.jooq.meta.jaxb.Generator
-import org.jooq.meta.jaxb.Jdbc
+import org.jooq.meta.jaxb.*
 import org.jooq.meta.jaxb.Target
 */
 
@@ -35,8 +32,9 @@ object JooqGenerator {
                             .withName("org.jooq.meta.h2.H2Database")
                             .withIncludes(".*")
                             .withInputSchema("PUBLIC")
-                    )
-                    .withTarget(
+                    ).withGenerate(
+                        Generate().withValidationAnnotations(true)
+                    ).withTarget(
                         Target()
                             .withPackageName("com.vaadin.starter.beveragebuddy.backend.jooq")
                             .withDirectory("src/main/kotlin")

@@ -53,19 +53,17 @@ object JooqUtils {
     var validator: Validator = Validation.buildDefaultValidatorFactory().validator
 }
 
-interface HasValidity {
-    val isValid: Boolean
-        get() = try {
-            validate()
-            true
-        } catch (ex: ConstraintViolationException) {
-            false
-        }
+val Record.isValid: Boolean
+    get() = try {
+        validate()
+        true
+    } catch (ex: ConstraintViolationException) {
+        false
+    }
 
-    fun validate() {
-        val violations = JooqUtils.validator.validate<Any>(this)
-        if (violations.isNotEmpty()) {
-            throw ConstraintViolationException(violations)
-        }
+fun Record.validate() {
+    val violations = JooqUtils.validator.validate<Any>(this)
+    if (violations.isNotEmpty()) {
+        throw ConstraintViolationException(violations)
     }
 }
