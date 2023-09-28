@@ -35,6 +35,8 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.getById
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.ui.*
 import eu.vaadinonkotlin.vaadin.vokdb.setDataLoader
 
@@ -102,7 +104,7 @@ class CategoriesList : KComposite() {
         }
 
     private fun edit(category: Category) {
-        editorDialog.edit(category)
+        editorDialog.edit(CATEGORY.getById(category.id!!))
     }
 
     private fun Category.getReviewCount(): String = Review.getTotalCountForReviewsInCategory(id!!).toString()

@@ -9,6 +9,7 @@ import jakarta.validation.Validator
 import org.jdbi.v3.core.Handle
 import org.jooq.*
 import org.jooq.impl.DSL
+import org.jooq.impl.UpdatableRecordImpl
 import java.sql.Connection
 
 /**
@@ -37,16 +38,28 @@ class JooqContext(
  * See [DSLContext.executeInsert].
  */
 fun TableRecord<*>.executeInsert(): Int = db2 { create.executeInsert(this@executeInsert) }
+fun UpdatableRecordImpl<*>.executeUpdate(): Int = db2 { create.executeUpdate(this@executeUpdate) }
+fun UpdatableRecordImpl<*>.executeDelete(): Int = db2 { create.executeDelete(this@executeDelete) }
+fun UpdatableRecordImpl<*>.save(): Int = if (id == null) executeInsert() else executeUpdate()
 
 @Suppress("UNCHECKED_CAST")
+val <R : Record> Table<R>.idField: TableField<R, Long?>
+    get() = javaClass.getDeclaredMethod("getID").invoke(this@idField) as TableField<R, Long?>
+var <R: TableRecord<R>> TableRecord<R>.id: Long?
+    get() = get(table.idField)
+    set(value) {
+        set(table.idField, value)
+    }
+
 fun <R : Record> Table<R>.getById(id: Long): R = db2 {
-    val idField = javaClass.getDeclaredField("ID")
-        .get(this@getById) as TableField<R, Long?>
     create.fetchSingle(this@getById, idField.eq(id))
 }
 
+fun Category.findByName(name: String): CategoryRecord? =
+    db2 { create.fetchOne(this@findByName, NAME.eq(name)) }
 fun Category.getByName(name: String): CategoryRecord =
     db2 { create.fetchSingle(this@getByName, NAME.eq(name)) }
+fun Category.existsWithName(name: String): Boolean = findByName(name) != null
 
 object JooqUtils {
     @Volatile

@@ -23,8 +23,13 @@ import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.validator.StringLengthValidator
-import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.executeDelete
+import com.vaadin.starter.beveragebuddy.backend.existsWithName
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.save
 import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
 import com.vaadin.starter.beveragebuddy.ui.EditorForm
 import com.vaadin.starter.beveragebuddy.ui.EditorDialogFrame
@@ -32,10 +37,10 @@ import com.vaadin.starter.beveragebuddy.ui.EditorDialogFrame
 /**
  * A form for editing [Category] objects.
  */
-class CategoryEditorForm(val category: Category) : FormLayout(), EditorForm<Category> {
+class CategoryEditorForm(val category: CategoryRecord) : FormLayout(), EditorForm<CategoryRecord> {
     private val isEditing get() = category.id != null
     override val itemType: String get() = "Category"
-    override val binder: Binder<Category> = beanValidationBinder()
+    override val binder: Binder<CategoryRecord> = beanValidationBinder()
     init {
         textField("Category Name") {
             bind(binder)
@@ -44,14 +49,14 @@ class CategoryEditorForm(val category: Category) : FormLayout(), EditorForm<Cate
                             "Category name must contain at least 3 printable characters",
                             3, null))
                     .withValidator({ name -> isNameUnique(name) }, "Category name must be unique")
-                    .bind(Category::name)
+                    .bind(CategoryRecord::name)
         }
     }
 
     private fun isNameUnique(name: String?): Boolean {
         if (name.isNullOrBlank()) return true
         if (category.name == name && isEditing) return true
-        return !Category.existsWithName(name)
+        return !CATEGORY.existsWithName(name)
     }
 }
 
@@ -59,8 +64,8 @@ class CategoryEditorForm(val category: Category) : FormLayout(), EditorForm<Cate
  * Opens dialogs for editing [Category] objects.
  * @property onCategoriesChanged called when a category has been created/edited/deleted.
  */
-class CategoryEditorDialog(private val onCategoriesChanged: (Category) -> Unit) {
-    private fun maybeDelete(frame: EditorDialogFrame<Category>, item: Category) {
+class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> Unit) {
+    private fun maybeDelete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
         val reviewCount = Review.getTotalCountForReviewsInCategory(item.id!!).toInt()
         if (reviewCount == 0) {
             delete(frame, item)
@@ -77,18 +82,18 @@ class CategoryEditorDialog(private val onCategoriesChanged: (Category) -> Unit) 
         }
     }
 
-    private fun delete(frame: EditorDialogFrame<Category>, item: Category) {
-        item.delete()
+    private fun delete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
+        item.executeDelete()
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         frame.close()
         onCategoriesChanged(item)
     }
 
     fun createNew() {
-        edit(Category())
+        edit(CategoryRecord())
     }
 
-    fun edit(category: Category) {
+    fun edit(category: CategoryRecord) {
         val frame = EditorDialogFrame(CategoryEditorForm(category))
         frame.onSaveItem = {
             val creating: Boolean = category.id == null
