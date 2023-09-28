@@ -4,7 +4,12 @@ import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.kaributesting.v10.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.Category
+import com.vaadin.starter.beveragebuddy.backend.attach
+import com.vaadin.starter.beveragebuddy.backend.db2
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.single
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
 import kotlin.test.expect
 
@@ -27,6 +32,24 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { Category.single().name }
+        expect("Beer") { CATEGORY.single().name }
+    }
+
+    test("edit existing category") {
+        val cat = CategoryRecord(name = "Foo")
+        db2 { cat.attach().insert() }
+
+        CategoryEditorDialog {} .edit(cat)
+
+        // make sure that the "New Category" dialog is opened
+        _expectOne<EditorDialogFrame<*>>()
+
+        // do the happy flow: fill in the form with valid values and click "Save"
+        _get<TextField> { label = "Category Name" } .value = "Beer"
+        _get<Button> { text = "Save" } ._click()
+        expectNotifications("Category successfully saved.")
+
+        _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
+        expect("Beer") { CATEGORY.single().name }
     }
 })

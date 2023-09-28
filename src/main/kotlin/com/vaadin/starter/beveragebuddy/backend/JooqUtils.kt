@@ -126,6 +126,7 @@ var <R: TableRecord<R>> TableRecord<R>.id: Long?
 fun <R : Record> Table<R>.getById(id: Long): R = db2 {
     create.fetchSingle(this@getById, idField.eq(id))
 }
+fun <R : Record> Table<R>.single(): R = db2 { create.fetchSingle(this@single) }
 
 fun Category.findByName(name: String): CategoryRecord? =
     db2 { create.fetchOne(this@findByName, NAME.eq(name)) }
