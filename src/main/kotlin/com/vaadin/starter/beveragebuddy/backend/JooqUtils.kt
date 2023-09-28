@@ -3,6 +3,7 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.gitlab.mvysny.jdbiorm.JdbiOrm
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validation
 import jakarta.validation.Validator
@@ -127,6 +128,11 @@ fun <R : Record> Table<R>.getById(id: Long): R = db2 {
     create.fetchSingle(this@getById, idField.eq(id))
 }
 fun <R : Record> Table<R>.single(): R = db2 { create.fetchSingle(this@single) }
+fun <R : Record> Table<R>.deleteAll(): Int = db2 { create.deleteFrom(this@deleteAll).execute() }
+fun Category.deleteAll(): Int = db2 {
+    create.update(REVIEW).setNull(REVIEW.CATEGORY).execute()
+    (this@deleteAll as Table<CategoryRecord>).deleteAll()
+}
 
 fun Category.findByName(name: String): CategoryRecord? =
     db2 { create.fetchOne(this@findByName, NAME.eq(name)) }

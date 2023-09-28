@@ -12,6 +12,9 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.Bootstrap
 import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.deleteAll
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
 import kotlin.test.expect
 
@@ -31,7 +34,7 @@ fun DynaNodeGroup.usingApp() {
     afterEach { MockVaadin.tearDown() }
 
     // it's a good practice to clear up the db before every test, to start every test with a predefined state.
-    fun cleanupDb() { Category.deleteAll(); Review.deleteAll() }
+    fun cleanupDb() { CATEGORY.deleteAll(); REVIEW.deleteAll() }
     beforeEach { cleanupDb() }
     afterEach { cleanupDb() }
 }
