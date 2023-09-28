@@ -30,6 +30,8 @@ fun <R> db2(block: JooqContext.() -> R): R {
 
     val jdbcConnection = JdbiOrm.getDataSource().connection
     val create = DSL.using(jdbcConnection, SQLDialect.H2)
+    // we don't want Records to carry the connection aroun since it will be
+    // invalidated by the pool once the db2{} block ends.
     create.configuration().settings().withAttachRecords(false)
     ctx = JooqContextInt(JooqContext(create, jdbcConnection))
 
@@ -43,6 +45,7 @@ fun <R> db2(block: JooqContext.() -> R): R {
 }
 
 /**
+ * @property create JDBI [DSLContext].
  * @property jdbcConnection the underlying JDBC connection.
  */
 class JooqContext(
@@ -98,6 +101,14 @@ class JooqContextInt(
 private fun currentJooqContext(): JooqContextInt =
     jooqContextThreadLocal.get() ?: throw IllegalStateException("Not running in transaction; call this function from the db{} block")
 
+/**
+ * Attaches given record to this transaction so that you can call [UpdatableRecord.store] on it. Must be called from within the `db2{}` block.
+ *
+ * Example of use:
+ * ```kotlin
+ * db2 { Category(name = "Foo").attach().insert() }
+ * ```
+ */
 fun <R: UpdatableRecord<R>> R.attach(): R {
     currentJooqContext().attach(this)
     return this
