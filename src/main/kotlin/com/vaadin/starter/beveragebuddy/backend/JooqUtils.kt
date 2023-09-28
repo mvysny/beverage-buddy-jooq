@@ -1,46 +1,107 @@
 package com.vaadin.starter.beveragebuddy.backend
 
-import com.github.vokorm.db
+import com.gitlab.mvysny.jdbiorm.JdbiOrm
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import jakarta.validation.ConstraintViolationException
 import jakarta.validation.Validation
 import jakarta.validation.Validator
-import org.jdbi.v3.core.Handle
 import org.jooq.*
 import org.jooq.impl.DSL
-import org.jooq.impl.UpdatableRecordImpl
+import org.slf4j.LoggerFactory
+import java.lang.IllegalStateException
 import java.sql.Connection
+import java.sql.SQLException
+
+private val jooqContextThreadLocal = ThreadLocal<JooqContextInt>()
 
 /**
  * Makes sure given block is executed in a DB transaction. When the block finishes normally, the transaction commits;
  * if the block throws any exception, the transaction is rolled back.
  *
- * Example of use: `db2 { create.query("") }`
- * @param block the block to run in the transaction. Builder-style provides helpful methods and values, e.g. [JooqContext.handle]
+ * Example of use: `db2 { create.query("yada yada") }`
+ * @param block the block to run in the transaction.
  */
-fun <R> db2(block: JooqContext.() -> R): R = db {
-    val ctx = JooqContext(handle, DSL.using(jdbcConnection, SQLDialect.H2))
-    ctx.block()
-}
+fun <R> db2(block: JooqContext.() -> R): R {
+    var ctx: JooqContextInt? = jooqContextThreadLocal.get()
+    if (ctx != null) {
+        return ctx.ctx.block()
+    }
 
-class JooqContext(
-    val handle: Handle,
-    val create: DSLContext
-) {
-    /**
-     * The underlying JDBC connection.
-     */
-    val jdbcConnection: Connection get() = handle.connection
+    val jdbcConnection = JdbiOrm.getDataSource().connection
+    val create = DSL.using(jdbcConnection, SQLDialect.H2)
+    create.configuration().settings().withAttachRecords(false)
+    ctx = JooqContextInt(JooqContext(create, jdbcConnection))
+
+    jooqContextThreadLocal.set(ctx)
+    try {
+        return ctx.runInTransaction { ctx.ctx.block() }
+    } finally {
+        jooqContextThreadLocal.set(null)
+        ctx.close()
+    }
 }
 
 /**
- * See [DSLContext.executeInsert].
+ * @property jdbcConnection the underlying JDBC connection.
  */
-fun TableRecord<*>.executeInsert(): Int = db2 { create.executeInsert(this@executeInsert) }
-fun UpdatableRecordImpl<*>.executeUpdate(): Int = db2 { create.executeUpdate(this@executeUpdate) }
-fun UpdatableRecordImpl<*>.executeDelete(): Int = db2 { create.executeDelete(this@executeDelete) }
-fun UpdatableRecordImpl<*>.save(): Int = if (id == null) executeInsert() else executeUpdate()
+class JooqContext(
+    val create: DSLContext,
+    val jdbcConnection: Connection,
+)
+
+class JooqContextInt(
+    val ctx: JooqContext
+) : AutoCloseable {
+    private val attachedRecords = mutableListOf<UpdatableRecord<*>>()
+
+    internal fun attach(record: UpdatableRecord<*>) {
+        record.attach(ctx.create.configuration())
+        attachedRecords.add(record)
+    }
+
+    override fun close() {
+        attachedRecords.forEach { it.detach() }
+        attachedRecords.clear()
+        try {
+            ctx.jdbcConnection.close()
+        } catch (e: SQLException) {
+            log.warn("Failed to close the JDBC Connection", e)
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        internal val log = LoggerFactory.getLogger(JooqContext::class.java)
+    }
+
+    internal fun <R> runInTransaction(block: () -> R): R {
+        ctx.jdbcConnection.autoCommit = false
+        var success = false
+        try {
+            val result = block()
+            ctx.jdbcConnection.commit()
+            success = true
+            return result
+        } finally {
+            if (!success) {
+                try {
+                    ctx.jdbcConnection.rollback()
+                } catch (e: SQLException) {
+                    log.error("Failed to roll back the transaction", e)
+                }
+            }
+        }
+    }
+}
+
+private fun currentJooqContext(): JooqContextInt =
+    jooqContextThreadLocal.get() ?: throw IllegalStateException("Not running in transaction; call this function from the db{} block")
+
+fun <R: UpdatableRecord<R>> R.attach(): R {
+    currentJooqContext().attach(this)
+    return this
+}
 
 @Suppress("UNCHECKED_CAST")
 val <R : Record> Table<R>.idField: TableField<R, Long?>

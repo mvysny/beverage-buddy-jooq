@@ -108,7 +108,7 @@ internal object DemoData {
 
     fun createDemoData() = db2 {
         // generate categories
-        BEVERAGES.values.distinct().forEach { name -> CategoryRecord(name = name).executeInsert() }
+        BEVERAGES.values.distinct().forEach { name -> CategoryRecord(name = name).attach().insert() }
 
         /// generate reviews
         val reviewCount: Int = 20 + Random.nextInt(30)
@@ -127,7 +127,7 @@ internal object DemoData {
             review.score = (1 + Random.nextInt(5)).toByte()
             review.category = category.id
             review.count = (1 + Random.nextInt(15)).toByte()
-            review.executeInsert()
+            review.attach().insert()
         }
     }
 }
