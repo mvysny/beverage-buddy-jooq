@@ -32,7 +32,7 @@ class ReviewEditorDialogTest : DynaTest({
 
         _expectOne<EditorDialogFrame<*>>()
         expectNotifications("There are errors in the form")
-        _get<TextField> { label = "Beverage name"} ._expectInvalid("must not be blank")
+        _get<TextField> { label = "Beverage name"} ._expectInvalid("must not be null")
     }
 
     test("create review without setting a category fails") {
@@ -59,9 +59,9 @@ class ReviewEditorDialogTest : DynaTest({
         _get<ComboBox<String>> { label = "Mark a score" } .selectByLabel("3")
 
         _get<Button> { text = "Create" } ._click()
+        _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
         expectNotifications("Beverage successfully added.")
 
-        _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
         val review = Review.single()
         expect("Test") { review.name }
         expect(3) { review.score }
