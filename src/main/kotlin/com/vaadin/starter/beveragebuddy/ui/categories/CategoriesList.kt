@@ -33,9 +33,8 @@ import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
-import com.vaadin.starter.beveragebuddy.backend.getById
+import com.vaadin.starter.beveragebuddy.backend.*
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.ui.*
 import eu.vaadinonkotlin.vaadin.vokdb.setDataLoader
@@ -50,11 +49,12 @@ class CategoriesList : KComposite() {
 
     private lateinit var header: H3
     private lateinit var toolbar: Toolbar
-    private lateinit var grid: Grid<Category>
+    private lateinit var grid: Grid<CategoryRow>
     // can't retrieve GridContextMenu from Grid: https://github.com/vaadin/vaadin-grid-flow/issues/523
-    lateinit var gridContextMenu: GridContextMenu<Category>
+    lateinit var gridContextMenu: GridContextMenu<CategoryRow>
 
     private val editorDialog = CategoryEditorDialog { updateView() }
+    private val dp = CategoryDataProvider()
 
     private val root = ui {
         verticalLayout(false) {
@@ -64,13 +64,14 @@ class CategoriesList : KComposite() {
                 onCreate = { editorDialog.createNew() }
             }
             header = h3()
-            grid = grid {
+            grid = grid(dataProvider = dp) {
                 isExpand = true
-                columnFor(Category::name) {
+                column({ it.category.name }) {
+                    setSortField(CATEGORY.NAME)
                     setHeader("Category")
                 }
-                addColumn { it.getReviewCount() }.setHeader("Beverages")
-                addColumn(ComponentRenderer<Button, Category>({ cat -> createEditButton(cat) })).apply {
+                addColumn { it.reviewCount }.setHeader("Beverages")
+                addColumn(ComponentRenderer<Button, CategoryRow>({ cat -> createEditButton(cat) })).apply {
                     flexGrow = 0; key = "edit"
                 }
                 element.themeList.add("row-dividers")
@@ -83,9 +84,9 @@ class CategoriesList : KComposite() {
             }
 
             addShortcut(Alt + KEY_E) {
-                val category = grid.asSingleSelect().value
-                if (category != null) {
-                    edit(category)
+                val row = grid.asSingleSelect().value
+                if (row != null) {
+                    edit(row)
                 }
             }
         }
@@ -95,33 +96,29 @@ class CategoriesList : KComposite() {
         updateView()
     }
 
-    private fun createEditButton(category: Category): Button =
+    private fun createEditButton(row: CategoryRow): Button =
         Button("Edit").apply {
             icon = Icon(VaadinIcon.EDIT)
             addClassName("category__edit")
             addThemeVariants(ButtonVariant.LUMO_TERTIARY)
-            onLeftClick { edit(category) }
+            onLeftClick { edit(row) }
         }
 
-    private fun edit(category: Category) {
-        editorDialog.edit(CATEGORY.getById(category.id!!))
+    private fun edit(row: CategoryRow) {
+        editorDialog.edit(CATEGORY.getById(row.category.id!!))
     }
 
-    private fun Category.getReviewCount(): String = Review.getTotalCountForReviewsInCategory(id!!).toString()
-
     private fun updateView() {
-        var dp: DataLoader<Category> = Category.dataLoader
+        dp.setFilter(toolbar.searchText)
         if (toolbar.searchText.isNotBlank()) {
-            dp = dp.withFilter { Category::name istartsWith toolbar.searchText }
             header.text = "Search for “${toolbar.searchText}”"
         } else {
             header.text = "Categories"
         }
-        grid.setDataLoader(dp)
     }
 
-    private fun deleteCategory(category: Category) {
-        category.delete()
+    private fun deleteCategory(row: CategoryRow) {
+        db2 { row.category.attach().delete() }
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         updateView()
     }

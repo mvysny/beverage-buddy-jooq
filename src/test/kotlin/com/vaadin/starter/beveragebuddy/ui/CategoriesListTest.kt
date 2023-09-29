@@ -10,12 +10,12 @@ import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.Bootstrap
-import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
-import com.vaadin.starter.beveragebuddy.backend.deleteAll
+import com.vaadin.starter.beveragebuddy.backend.*
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
+import com.vaadin.starter.beveragebuddy.ui.categories.CategoryRow
 import kotlin.test.expect
 
 // since there is no servlet environment, Flow won't auto-detect the @Routes. We need to auto-discover all @Routes
@@ -80,10 +80,12 @@ class CategoriesListTest : DynaTest({
     }
 
     test("edit existing category via context menu") {
-        val cat: Category = Category(name = "Beers").apply { save() }
-        val grid = _get<Grid<Category>>()
+        val cat = CategoryRecord(name = "Beers")
+        db2 { cat.attach().store() }
+
+        val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
-        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Edit (Alt+E)", cat)
+        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Edit (Alt+E)", CategoryRow(cat, 0))
 
         // make sure that the "Edit Category" dialog is opened
         _expectOne<EditorDialogFrame<*>>()
@@ -91,10 +93,12 @@ class CategoriesListTest : DynaTest({
     }
 
     test("delete existing category via context menu") {
-        val cat: Category = Category(name = "Beers").apply { save() }
-        val grid = _get<Grid<Category>>()
+        val cat = CategoryRecord(name = "Beers")
+        db2 { cat.attach().store() }
+
+        val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
-        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Delete", cat)
+        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Delete", CategoryRow(cat, 0))
 
         // check that the category has been deleted in the database.
         expectList() { Category.findAll() }
