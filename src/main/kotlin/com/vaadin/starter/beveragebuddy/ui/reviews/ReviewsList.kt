@@ -33,6 +33,7 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.withFilterText
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar
+import com.vaadin.starter.beveragebuddy.ui.getSize
 import com.vaadin.starter.beveragebuddy.ui.toolbarView
 import eu.vaadinonkotlin.vaadin.vokdb.setDataLoader
 
@@ -46,8 +47,9 @@ class ReviewsList : KComposite() {
 
     private lateinit var toolbar: Toolbar
     private lateinit var header: H3
-    private lateinit var reviewsGrid: VirtualList<ReviewWithCategory>
+    private lateinit var reviewsGrid: VirtualList<ReviewRow>
     private val editDialog = ReviewEditorDialog { updateList() }
+    private val dp = ReviewDataProvider()
 
     private val root = ui {
         verticalLayout(false) {
@@ -59,11 +61,11 @@ class ReviewsList : KComposite() {
             header = h3 {
                 setId("header")
             }
-            reviewsGrid = virtualList {
+            reviewsGrid = virtualList(dp) {
                 addClassName("reviews")
-                setRenderer(ComponentRenderer<ReviewItem, ReviewWithCategory> { review ->
+                setRenderer(ComponentRenderer<ReviewItem, ReviewRow> { review ->
                     val item = ReviewItem(review)
-                    item.onEdit = { editDialog.edit(REVIEW.getById(review.id!!)) }
+                    item.onEdit = { editDialog.edit(REVIEW.getById(review.review.id!!)) }
                     item
                 })
             }
@@ -75,9 +77,8 @@ class ReviewsList : KComposite() {
     }
 
     private fun updateList() {
-        val dp: DataLoader<ReviewWithCategory> = ReviewWithCategory.dataLoader
-                .withFilterText(toolbar.searchText)
-        val size: Long = dp.getCount()
+        dp.setFilter(toolbar.searchText)
+        val size: Int = dp.getSize()
         if (toolbar.searchText.isBlank()) {
             header.text = "Reviews"
             header.add(Span("$size in total"))
@@ -85,14 +86,13 @@ class ReviewsList : KComposite() {
             header.text = "Search for “${toolbar.searchText}”"
             header.add(Span("$size results"))
         }
-        reviewsGrid.setDataLoader(dp)
     }
 }
 
 /**
  * Shows a single row stripe with information about a single [ReviewWithCategory].
  */
-class ReviewItem(val review: ReviewWithCategory) : KComposite() {
+class ReviewItem(val row: ReviewRow) : KComposite() {
     /**
      * Fired when this item is to be edited (the "Edit" button is pressed by the User).
      */
@@ -101,25 +101,25 @@ class ReviewItem(val review: ReviewWithCategory) : KComposite() {
     private val root = ui {
         div("review") {
             div("review__rating") {
-                p(review.score.toString()) {
+                p(row.review.score.toString()) {
                     className = "review__score"
-                    element.setAttribute("data-score", review.score.toString())
+                    element.setAttribute("data-score", row.review.score.toString())
                 }
-                p(review.count.toString()) {
+                p(row.review.count.toString()) {
                     className = "review__count"
                     span("times tasted")
                 }
             }
             div("review__details") {
-                h4(review.name) {
+                h4(row.review.name?:"") {
                     addClassName("review__name")
                 }
                 p {
                     className = "review__category"
-                    if (review.category != null) {
+                    if (row.review.category != null) {
                         element.themeList.add("badge small")
-                        element.style.set("--category", review.category.toString())
-                        text = review.categoryName
+                        element.style.set("--category", row.review.category.toString())
+                        text = row.categoryName
                     } else {
                         element.style.set("--category", "-1")
                         text = "Undefined"
@@ -128,7 +128,7 @@ class ReviewItem(val review: ReviewWithCategory) : KComposite() {
             }
             div("review__date") {
                 h5("Last tasted")
-                p(review.date.toString())
+                p(row.review.date.toString())
             }
             button("Edit") {
                 icon = VaadinIcon.EDIT.create()
@@ -139,5 +139,5 @@ class ReviewItem(val review: ReviewWithCategory) : KComposite() {
         }
     }
 
-    override fun toString(): String = "ReviewItem($review)"
+    override fun toString(): String = "ReviewItem($row)"
 }

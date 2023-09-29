@@ -4,6 +4,8 @@ import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.binder.Result
 import com.vaadin.flow.data.binder.ValueContext
 import com.vaadin.flow.data.converter.Converter
+import com.vaadin.flow.data.provider.DataProvider
+import com.vaadin.flow.data.provider.Query
 
 class IntToByteConverter : Converter<Int?, Byte> {
     override fun convertToModel(
@@ -23,3 +25,5 @@ class IntToByteConverter : Converter<Int?, Byte> {
 
 fun <BEAN> Binder.BindingBuilder<BEAN, Int?>.toByte(): Binder.BindingBuilder<BEAN, Byte?> =
     withConverter(IntToByteConverter())
+
+fun <T, F> DataProvider<T, F>.getSize(filter: F? = null): Int = size(Query(filter))
