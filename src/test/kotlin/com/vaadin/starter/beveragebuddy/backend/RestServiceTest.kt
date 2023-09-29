@@ -4,6 +4,8 @@ import com.github.mvysny.dynatest.DynaNodeGroup
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.DynaTestDsl
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import eu.vaadinonkotlin.restclient.*
 import org.eclipse.jetty.ee10.webapp.WebAppContext

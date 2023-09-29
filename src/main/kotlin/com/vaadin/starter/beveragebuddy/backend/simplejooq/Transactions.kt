@@ -1,16 +1,11 @@
-package com.vaadin.starter.beveragebuddy.backend
+package com.vaadin.starter.beveragebuddy.backend.simplejooq
 
 import com.gitlab.mvysny.jdbiorm.JdbiOrm
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
-import jakarta.validation.ConstraintViolationException
-import jakarta.validation.Validation
-import jakarta.validation.Validator
-import org.jooq.*
+import org.jooq.DSLContext
+import org.jooq.SQLDialect
+import org.jooq.UpdatableRecord
 import org.jooq.impl.DSL
 import org.slf4j.LoggerFactory
-import java.lang.IllegalStateException
 import java.sql.Connection
 import java.sql.SQLException
 
@@ -113,42 +108,4 @@ private fun currentJooqContext(): JooqContextInt =
 fun <R: UpdatableRecord<R>> R.attach(): R {
     currentJooqContext().attach(this)
     return this
-}
-
-@Suppress("UNCHECKED_CAST")
-val <R : Record> Table<R>.idField: TableField<R, Long?>
-    get() {
-        val idFields = primaryKey!!.fields
-        require(idFields.size == 1) { "${this@idField} has no PK or a composite one: $idFields" }
-        return idFields[0] as TableField<R, Long?>
-    }
-
-fun <R : Record> Table<R>.getById(id: Long): R = db2 {
-    create.fetchSingle(this@getById, idField.eq(id))
-}
-fun <R : Record> Table<R>.single(): R = db2 { create.fetchSingle(this@single) }
-fun <R : Record> Table<R>.deleteAll(): Int = db2 { create.deleteFrom(this@deleteAll).execute() }
-fun Category.deleteAll(): Int = db2 {
-    create.update(REVIEW).setNull(REVIEW.CATEGORY).execute()
-    (this@deleteAll as Table<CategoryRecord>).deleteAll()
-}
-
-object JooqUtils {
-    @Volatile
-    var validator: Validator = Validation.buildDefaultValidatorFactory().validator
-}
-
-val Record.isValid: Boolean
-    get() = try {
-        validate()
-        true
-    } catch (ex: ConstraintViolationException) {
-        false
-    }
-
-fun Record.validate() {
-    val violations = JooqUtils.validator.validate<Any>(this)
-    if (violations.isNotEmpty()) {
-        throw ConstraintViolationException(violations)
-    }
 }

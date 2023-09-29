@@ -2,10 +2,10 @@ package com.vaadin.starter.beveragebuddy.ui.reviews
 
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider
 import com.vaadin.flow.data.provider.Query
-import com.vaadin.starter.beveragebuddy.backend.db2
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.ui.AbstractJooqDataProvider
 import com.vaadin.starter.beveragebuddy.ui.fetchOneInt
 import org.jooq.Condition

@@ -3,6 +3,8 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import java.time.LocalDate
 import kotlin.random.Random
 

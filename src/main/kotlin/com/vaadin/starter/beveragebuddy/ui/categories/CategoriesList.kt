@@ -18,9 +18,6 @@ package com.vaadin.starter.beveragebuddy.ui.categories
 import com.github.mvysny.karibudsl.v10.*
 import com.github.mvysny.kaributools.ModifierKey.*
 import com.github.mvysny.kaributools.addShortcut
-import com.github.mvysny.vokdataloader.DataLoader
-import com.github.mvysny.vokdataloader.withFilter
-import com.github.vokorm.dataloader.dataLoader
 import com.vaadin.flow.component.Key.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -34,10 +31,11 @@ import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.*
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.getById
 import com.vaadin.starter.beveragebuddy.ui.*
-import eu.vaadinonkotlin.vaadin.vokdb.setDataLoader
 
 /**
  * Displays the list of available categories, with a search filter as well as

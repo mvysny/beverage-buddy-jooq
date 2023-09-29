@@ -22,9 +22,9 @@ import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
-import com.vaadin.starter.beveragebuddy.backend.attach
-import com.vaadin.starter.beveragebuddy.backend.db2
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.ui.*
 import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
 import eu.vaadinonkotlin.vaadin.vokdb.toId

@@ -1,7 +1,7 @@
 package com.vaadin.starter.beveragebuddy.backend.jooq.tables.records
 
 import com.github.mvysny.dynatest.DynaTest
-import com.vaadin.starter.beveragebuddy.backend.isValid
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.isValid
 import java.time.LocalDate
 import kotlin.test.expect
 

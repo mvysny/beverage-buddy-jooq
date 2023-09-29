@@ -4,11 +4,11 @@ import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.kaributesting.v10.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.attach
-import com.vaadin.starter.beveragebuddy.backend.db2
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
-import com.vaadin.starter.beveragebuddy.backend.single
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
 import kotlin.test.expect
 

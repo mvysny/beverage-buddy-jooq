@@ -14,6 +14,9 @@ import com.vaadin.starter.beveragebuddy.backend.*
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.deleteAll
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryRow
 import kotlin.test.expect

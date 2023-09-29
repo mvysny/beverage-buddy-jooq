@@ -27,6 +27,9 @@ import com.vaadin.starter.beveragebuddy.backend.*
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
 import com.vaadin.starter.beveragebuddy.ui.EditorForm
 import com.vaadin.starter.beveragebuddy.ui.EditorDialogFrame
@@ -63,7 +66,7 @@ class CategoryEditorForm(val category: CategoryRecord) : FormLayout(), EditorFor
  */
 class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> Unit) {
     private fun maybeDelete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
-        val reviewCount = Review.getTotalCountForReviewsInCategory(item.id!!).toInt()
+        val reviewCount = REVIEW.getTotalCountForReviewsInCategory(item.id!!)
         if (reviewCount == 0) {
             delete(frame, item)
         } else {
