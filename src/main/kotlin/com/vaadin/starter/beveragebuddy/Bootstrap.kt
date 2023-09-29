@@ -1,7 +1,6 @@
 package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributools.addMetaTag
-import com.gitlab.mvysny.jdbiorm.JdbiOrm
 import com.vaadin.flow.component.page.AppShellConfigurator
 import com.vaadin.flow.component.page.BodySize
 import com.vaadin.flow.component.page.Viewport
@@ -9,15 +8,16 @@ import com.vaadin.flow.server.ServiceInitEvent
 import com.vaadin.flow.server.VaadinServiceInitListener
 import com.vaadin.flow.theme.Theme
 import com.vaadin.starter.beveragebuddy.backend.DemoData
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.SimpleJooq
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import eu.vaadinonkotlin.VaadinOnKotlin
 import jakarta.servlet.ServletContextEvent
 import jakarta.servlet.ServletContextListener
 import jakarta.servlet.annotation.WebListener
 import org.flywaydb.core.Flyway
 import org.h2.Driver
 import org.slf4j.LoggerFactory
+import java.io.Closeable
 
 /**
  * Boots the app:
@@ -42,16 +42,12 @@ class Bootstrap: ServletContextListener {
             username = "sa"
             password = ""
         }
-        JdbiOrm.setDataSource(HikariDataSource(cfg))
-
-        // Initializes the VoK framework
-        log.info("Initializing VaadinOnKotlin")
-        VaadinOnKotlin.init()
+        SimpleJooq.dataSource = HikariDataSource(cfg)
 
         // Makes sure the database is up-to-date
         log.info("Running DB migrations")
         val flyway: Flyway = Flyway.configure()
-            .dataSource(JdbiOrm.getDataSource())
+            .dataSource(SimpleJooq.dataSource)
             .load()
         flyway.migrate()
 
@@ -67,8 +63,7 @@ class Bootstrap: ServletContextListener {
 
     override fun contextDestroyed(sce: ServletContextEvent?) {
         log.info("Shutting down");
-        log.info("Destroying VaadinOnKotlin")
-        VaadinOnKotlin.destroy()
+        (SimpleJooq.dataSource as? Closeable)?.close()
         log.info("Shutdown complete")
     }
 

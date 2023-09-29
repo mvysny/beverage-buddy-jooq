@@ -1,6 +1,5 @@
 package com.vaadin.starter.beveragebuddy.backend.simplejooq
 
-import com.gitlab.mvysny.jdbiorm.JdbiOrm
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.UpdatableRecord
@@ -24,7 +23,7 @@ fun <R> db2(block: JooqContext.() -> R): R {
         return ctx.ctx.block()
     }
 
-    val jdbcConnection = JdbiOrm.getDataSource().connection
+    val jdbcConnection = SimpleJooq.dataSource.connection
     val create = DSL.using(jdbcConnection, SQLDialect.H2)
     // we don't want Records to carry the connection aroun since it will be
     // invalidated by the pool once the db2{} block ends.
