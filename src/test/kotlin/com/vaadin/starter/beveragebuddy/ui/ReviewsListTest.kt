@@ -11,14 +11,14 @@ import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.virtuallist.VirtualList
 import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
-import com.vaadin.starter.beveragebuddy.backend.ReviewWithCategory
+import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewRow
 
 class ReviewsListTest : DynaTest({
 
     usingApp()
 
     test("no reviews initially") {
-        _get<VirtualList<ReviewWithCategory>>().expectRows(0)
+        _get<VirtualList<ReviewRow>>().expectRows(0)
     }
 
     test("reviews listed") {
@@ -26,7 +26,7 @@ class ReviewsListTest : DynaTest({
         val cat = Category(name = "Beers")
         cat.save()
         Review(score = 1, name = "Good!", category = cat.id).save()
-        _get<VirtualList<ReviewWithCategory>>().expectRows(1)
+        _get<VirtualList<ReviewRow>>().expectRows(1)
     }
 
     test("'new review' smoke test") {

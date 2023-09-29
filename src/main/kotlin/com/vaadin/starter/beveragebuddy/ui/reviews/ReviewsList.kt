@@ -17,7 +17,6 @@ package com.vaadin.starter.beveragebuddy.ui.reviews
 
 import com.github.mvysny.karibudsl.v10.*
 import com.github.mvysny.karibudsl.v23.virtualList
-import com.github.mvysny.vokdataloader.DataLoader
 import com.vaadin.flow.component.button.ButtonVariant
 import com.vaadin.flow.component.html.H3
 import com.vaadin.flow.component.html.Span
@@ -26,16 +25,12 @@ import com.vaadin.flow.component.virtuallist.VirtualList
 import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import com.vaadin.starter.beveragebuddy.backend.Review
-import com.vaadin.starter.beveragebuddy.backend.ReviewWithCategory
 import com.vaadin.starter.beveragebuddy.backend.getById
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
-import com.vaadin.starter.beveragebuddy.backend.withFilterText
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar
 import com.vaadin.starter.beveragebuddy.ui.getSize
 import com.vaadin.starter.beveragebuddy.ui.toolbarView
-import eu.vaadinonkotlin.vaadin.vokdb.setDataLoader
 
 /**
  * Displays the list of available categories, with a search filter as well as
