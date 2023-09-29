@@ -119,7 +119,7 @@ fun <R: UpdatableRecord<R>> R.attach(): R {
 val <R : Record> Table<R>.idField: TableField<R, Long?>
     get() {
         val idFields = primaryKey!!.fields
-        require(idFields.size == 1) { "${this@idField} has no PK or a composite one: ${idFields}" }
+        require(idFields.size == 1) { "${this@idField} has no PK or a composite one: $idFields" }
         return idFields[0] as TableField<R, Long?>
     }
 
@@ -132,12 +132,6 @@ fun Category.deleteAll(): Int = db2 {
     create.update(REVIEW).setNull(REVIEW.CATEGORY).execute()
     (this@deleteAll as Table<CategoryRecord>).deleteAll()
 }
-
-fun Category.findByName(name: String): CategoryRecord? =
-    db2 { create.fetchOne(this@findByName, NAME.eq(name)) }
-fun Category.getByName(name: String): CategoryRecord =
-    db2 { create.fetchSingle(this@getByName, NAME.eq(name)) }
-fun Category.existsWithName(name: String): Boolean = findByName(name) != null
 
 object JooqUtils {
     @Volatile
