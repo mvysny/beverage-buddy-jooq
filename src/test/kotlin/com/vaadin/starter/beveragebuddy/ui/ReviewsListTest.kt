@@ -10,8 +10,11 @@ import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.virtuallist.VirtualList
 import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewRow
+import java.time.LocalDate
 
 class ReviewsListTest : DynaTest({
 
@@ -25,7 +28,7 @@ class ReviewsListTest : DynaTest({
         // prepare testing data
         val cat = Category(name = "Beers")
         cat.save()
-        Review(score = 1, name = "Good!", category = cat.id).save()
+        db2 { ReviewRecord(score = 1, name = "Good!", category = cat.id, date = LocalDate.now(), count = 1).attach().store() }
         _get<VirtualList<ReviewRow>>().expectRows(1)
     }
 

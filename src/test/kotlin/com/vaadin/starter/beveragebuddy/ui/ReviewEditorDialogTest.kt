@@ -7,7 +7,6 @@ import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.backend.Category
-import com.vaadin.starter.beveragebuddy.backend.Review
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
