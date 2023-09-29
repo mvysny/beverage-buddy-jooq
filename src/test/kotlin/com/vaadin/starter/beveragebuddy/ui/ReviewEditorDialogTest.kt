@@ -9,6 +9,7 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
 import kotlin.test.expect
 
@@ -44,7 +45,7 @@ class ReviewEditorDialogTest : DynaTest({
 
         _expectOne<EditorDialogFrame<*>>()
         // no review has been created
-        expectList() { REVIEW.findAll() }
+        expectList() { REVIEW.findAll().toList() }
     }
 
     test("create new review") {

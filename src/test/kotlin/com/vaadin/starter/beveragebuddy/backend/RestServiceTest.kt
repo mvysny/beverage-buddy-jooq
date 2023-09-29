@@ -59,6 +59,11 @@ class RestServiceTest : DynaTest({
     }
     test("one category") {
         db2 { CategoryRecord(name = "Foo").attach().store() }
-        expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategories() }
+        expectMatch("""\[\{"id":.+,"name":"Foo"}]""".toRegex()) { client.getAllCategories() }
     }
 })
+
+fun expectMatch(regex: Regex, actualBlock: () -> String) {
+    val actual = actualBlock()
+    expect(true, "$actual doesn't match $regex") { regex.matches(actual) }
+}

@@ -37,7 +37,7 @@ fun DynaNodeGroup.usingApp() {
     afterEach { MockVaadin.tearDown() }
 
     // it's a good practice to clear up the db before every test, to start every test with a predefined state.
-    fun cleanupDb() { CATEGORY.deleteAll(); REVIEW.deleteAll() }
+    fun cleanupDb() { CATEGORY.deleteAllCategories(); REVIEW.deleteAll() }
     beforeEach { cleanupDb() }
     afterEach { cleanupDb() }
 }

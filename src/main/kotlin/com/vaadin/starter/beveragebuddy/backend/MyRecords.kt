@@ -25,7 +25,7 @@ fun Review.getTotalCountForReviewsInCategory(categoryId: Long): Int = db2 {
     result?.toInt() ?: 0
 }
 
-fun Category.deleteAll(): Int = db2 {
+fun Category.deleteAllCategories(): Int = db2 {
     create.update(REVIEW).setNull(REVIEW.CATEGORY).execute()
-    (this@deleteAll as Table<CategoryRecord>).deleteAll()
+    deleteAll()
 }
