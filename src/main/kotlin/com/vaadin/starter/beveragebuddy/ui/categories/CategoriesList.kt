@@ -52,7 +52,7 @@ class CategoriesList : KComposite() {
     // can't retrieve GridContextMenu from Grid: https://github.com/vaadin/vaadin-grid-flow/issues/523
     lateinit var gridContextMenu: GridContextMenu<CategoryRow>
 
-    private val editorDialog = CategoryEditorDialog { updateView() }
+    private val editorDialog = CategoryEditorDialog { dp.refreshAll() }
     private val dp = CategoryDataProvider()
 
     private val root = ui {
