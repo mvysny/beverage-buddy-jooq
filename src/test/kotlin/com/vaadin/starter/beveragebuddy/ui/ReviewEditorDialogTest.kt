@@ -32,7 +32,7 @@ class ReviewEditorDialogTest : DynaTest({
 
         _expectOne<EditorDialogFrame<*>>()
         expectNotifications("There are errors in the form")
-        _get<TextField> { label = "Beverage name"} ._expectInvalid("must not be null")
+        _get<TextField> { label = "Beverage name"} ._expectInvalid("must not be blank")
     }
 
     test("create review without setting a category fails") {

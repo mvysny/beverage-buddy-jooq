@@ -27,7 +27,6 @@ open class CategoryRecord() : UpdatableRecordImpl<CategoryRecord>(Category.CATEG
         set(value): Unit = set(0, value)
         get(): Long? = get(0) as Long?
 
-    @get:NotNull
     @get:Size(max = 200)
     @get:NotBlank
     open var name: String?

@@ -26,7 +26,6 @@ open class ReviewRecord() : UpdatableRecordImpl<ReviewRecord>(Review.REVIEW), Re
         set(value): Unit = set(0, value)
         get(): Long? = get(0) as Long?
 
-    @get:NotNull
     @get:Size(min = 3, max = 200)
     @get:NotBlank
     open var name: String?
