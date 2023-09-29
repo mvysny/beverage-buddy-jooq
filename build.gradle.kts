@@ -62,7 +62,13 @@ dependencies {
 //    implementation("org.jooq:jooq-codegen:${properties["jooqVersion"]}")
 
     // REST
-    implementation("eu.vaadinonkotlin:vok-rest:${properties["vokVersion"]}")
+    api("io.javalin:javalin:${properties["javalin_version"]}") {
+        exclude(group = "org.eclipse.jetty")
+        exclude(group = "org.eclipse.jetty.websocket")
+        exclude(group = "com.fasterxml.jackson.core")
+    }
+    // workaround for https://github.com/google/gson/issues/1059
+    implementation("com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1")
 
     // testing
     testImplementation("com.github.mvysny.kaributesting:karibu-testing-v24:2.1.0")
