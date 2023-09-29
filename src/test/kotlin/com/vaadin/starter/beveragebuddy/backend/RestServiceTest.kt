@@ -3,7 +3,6 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.github.mvysny.dynatest.DynaNodeGroup
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.DynaTestDsl
-import com.github.mvysny.dynatest.expectList
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import eu.vaadinonkotlin.restclient.*
