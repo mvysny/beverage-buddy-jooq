@@ -83,6 +83,9 @@ fun <R : Record> DataProvider<R, Condition>.withStringFilter(filterConverter: (S
         }
     }
 
+/**
+ * Returns Vaadin [DataProvider] which provides all records from this table.
+ */
 val <R : Record> Table<R>.dataProvider: JooqRecordDataProvider<R>
     get() = JooqRecordDataProvider(this)
 
