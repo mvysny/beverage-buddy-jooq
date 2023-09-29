@@ -4,7 +4,7 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryReco
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -108,7 +108,7 @@ internal object DemoData {
                 .forEach { name -> BEVERAGES[name] = OTHER }
     }
 
-    fun createDemoData() = db2 {
+    fun createDemoData() = db {
         // generate categories
         BEVERAGES.values.distinct().forEach { name -> CategoryRecord(name = name).attach().insert() }
 

@@ -12,14 +12,14 @@ val <R : Record> Table<R>.idField: TableField<R, Long?>
         return idFields[0] as TableField<R, Long?>
     }
 
-fun <R : Record> Table<R>.getById(id: Long): R = db2 {
+fun <R : Record> Table<R>.getById(id: Long): R = db {
     create.fetchSingle(this@getById, idField.eq(id))
 }
 
-fun <R : Record> Table<R>.single(): R = db2 { create.fetchSingle(this@single) }
+fun <R : Record> Table<R>.single(): R = db { create.fetchSingle(this@single) }
 
 fun <R : Record> Table<R>.deleteAll(): Int =
-    db2 { create.deleteFrom(this@deleteAll).execute() }
+    db { create.deleteFrom(this@deleteAll).execute() }
 
 fun <R : Record> Table<R>.findAll(): List<R> =
-    db2 { create.selectFrom(this@findAll).fetch() }
+    db { create.selectFrom(this@findAll).fetch() }

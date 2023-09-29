@@ -15,7 +15,7 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryReco
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.deleteAll
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
@@ -57,7 +57,7 @@ class CategoriesListTest : DynaTest({
 
     test("grid lists all categories") {
         // prepare testing data
-        db2 { CategoryRecord(name = "Beers").attach().store() }
+        db { CategoryRecord(name = "Beers").attach().store() }
 
         // now the "Categories" list should be displayed. Look up the Grid and assert on its contents.
         val grid = _get<Grid<CategoryDTO>>()
@@ -74,7 +74,7 @@ class CategoriesListTest : DynaTest({
 
     test("edit existing category") {
         // prepare testing data
-        db2 { CategoryRecord(name = "Beers").attach().store() }
+        db { CategoryRecord(name = "Beers").attach().store() }
 
         val grid = _get<Grid<CategoryRecord>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
@@ -87,7 +87,7 @@ class CategoriesListTest : DynaTest({
 
     test("edit existing category via context menu") {
         val cat = CategoryRecord(name = "Beers")
-        db2 { cat.attach().store() }
+        db { cat.attach().store() }
 
         val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
@@ -100,7 +100,7 @@ class CategoriesListTest : DynaTest({
 
     test("delete existing category via context menu") {
         val cat = CategoryRecord(name = "Beers")
-        db2 { cat.attach().store() }
+        db { cat.attach().store() }
 
         val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")

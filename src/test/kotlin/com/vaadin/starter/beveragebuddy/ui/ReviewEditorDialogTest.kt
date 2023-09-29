@@ -6,11 +6,10 @@ import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.CategoryDTO
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
@@ -53,7 +52,7 @@ class ReviewEditorDialogTest : DynaTest({
 
     test("create new review") {
         val cat = CategoryRecord(name = "Beers")
-        db2 { cat.attach().store() }
+        db { cat.attach().store() }
 
         _get<Button> { text = "New review (Alt+N)" }._click()
 

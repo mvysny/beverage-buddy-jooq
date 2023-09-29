@@ -29,7 +29,7 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryReco
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
 import com.vaadin.starter.beveragebuddy.ui.EditorForm
 import com.vaadin.starter.beveragebuddy.ui.EditorDialogFrame
@@ -83,7 +83,7 @@ class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> 
     }
 
     private fun delete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
-        db2 { item.attach().delete() }
+        db { item.attach().delete() }
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         frame.close()
         onCategoriesChanged(item)
@@ -97,7 +97,7 @@ class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> 
         val frame = EditorDialogFrame(CategoryEditorForm(category))
         frame.onSaveItem = {
             val creating: Boolean = category.id == null
-            db2 { category.attach().store() }
+            db { category.attach().store() }
             val op: String = if (creating) "added" else "saved"
             Notification.show("Category successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onCategoriesChanged(category)

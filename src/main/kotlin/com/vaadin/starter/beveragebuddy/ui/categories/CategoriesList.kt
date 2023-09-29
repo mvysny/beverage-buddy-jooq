@@ -30,11 +30,10 @@ import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
-import com.vaadin.starter.beveragebuddy.backend.*
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.getById
 import com.vaadin.starter.beveragebuddy.ui.*
 
@@ -117,7 +116,7 @@ class CategoriesList : KComposite() {
     }
 
     private fun deleteCategory(row: CategoryRow) {
-        db2 {
+        db {
             create.update(REVIEW)
                 .setNull(REVIEW.CATEGORY)
                 .where(REVIEW.CATEGORY.eq(row.category.id!!))

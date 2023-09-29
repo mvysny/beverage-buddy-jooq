@@ -6,7 +6,7 @@ import com.vaadin.flow.data.binder.ValueContext
 import com.vaadin.flow.data.converter.Converter
 import com.vaadin.flow.data.provider.*
 import com.vaadin.flow.data.provider.Query
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import org.jooq.*
 import org.jooq.SortOrder
 import org.jooq.impl.DSL
@@ -28,7 +28,7 @@ class JooqRecordDataProvider<R : Record>(private val table: Table<R>) :
     }
 
     override fun fetchFromBackEnd(query: Query<R, Condition>): Stream<R> {
-        val result = db2 {
+        val result = db {
             create.selectFrom(table).where(getWhereClause(query))
                 .orderByQuery(query).limit(query.limit).offset(query.offset)
                 .fetch()
@@ -36,7 +36,7 @@ class JooqRecordDataProvider<R : Record>(private val table: Table<R>) :
         return result.stream()
     }
 
-    override fun sizeInBackEnd(query: Query<R, Condition>): Int = db2 {
+    override fun sizeInBackEnd(query: Query<R, Condition>): Int = db {
         create.selectCount().from(table).where(getWhereClause(query))
             .fetchOneInt()
     }
@@ -104,7 +104,7 @@ class RecordToIdConverter<R : TableRecord<R>, ID>(
         value: ID?, context: ValueContext?
     ): R? {
         if (value == null) return null
-        return db2 {
+        return db {
             create.selectFrom(idField.table).where(idField.eq(value)).fetchOne()
         }
     }

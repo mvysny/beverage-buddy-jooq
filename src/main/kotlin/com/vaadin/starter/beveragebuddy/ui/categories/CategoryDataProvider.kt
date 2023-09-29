@@ -4,7 +4,7 @@ import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider
 import com.vaadin.flow.data.provider.Query
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.AbstractJooqDataProvider
 import com.vaadin.starter.beveragebuddy.ui.fetchOneInt
 import org.jooq.Condition
@@ -25,7 +25,7 @@ class CategoryDataProvider :
     }
 
     override fun fetchFromBackEnd(query: Query<CategoryRow, String>): Stream<CategoryRow> {
-        val result: List<CategoryRow> = db2 {
+        val result: List<CategoryRow> = db {
             create.select(CATEGORY.asterisk(), reviewCountField)
                 .from(CATEGORY)
                 .where(getWhereClause(query))
@@ -37,7 +37,7 @@ class CategoryDataProvider :
         return result.stream()
     }
 
-    override fun sizeInBackEnd(query: Query<CategoryRow, String>): Int = db2 {
+    override fun sizeInBackEnd(query: Query<CategoryRow, String>): Int = db {
         create.selectCount()
             .from(CATEGORY)
             .where(getWhereClause(query))

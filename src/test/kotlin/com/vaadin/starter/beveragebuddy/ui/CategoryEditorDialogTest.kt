@@ -7,7 +7,7 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
 import kotlin.test.expect
@@ -36,7 +36,7 @@ class CategoryEditorDialogTest : DynaTest({
 
     test("edit existing category") {
         val cat = CategoryRecord(name = "Foo")
-        db2 { cat.attach().insert() }
+        db { cat.attach().insert() }
 
         CategoryEditorDialog {} .edit(cat)
 

@@ -5,7 +5,7 @@ import com.vaadin.flow.data.provider.Query
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.AbstractJooqDataProvider
 import com.vaadin.starter.beveragebuddy.ui.fetchOneInt
 import org.jooq.Condition
@@ -33,7 +33,7 @@ class ReviewDataProvider : AbstractJooqDataProvider<ReviewRow, Void>(REVIEW),
     }
 
     override fun fetchFromBackEnd(query: Query<ReviewRow, Void>): Stream<ReviewRow> {
-        val result = db2 {
+        val result = db {
             create.select(REVIEW.asterisk(), CATEGORY.NAME)
                 .from(REVIEW)
                 .leftJoin(CATEGORY).on(REVIEW.CATEGORY.eq(CATEGORY.ID))
@@ -46,7 +46,7 @@ class ReviewDataProvider : AbstractJooqDataProvider<ReviewRow, Void>(REVIEW),
         return result.stream()
     }
 
-    override fun sizeInBackEnd(query: Query<ReviewRow, Void>): Int = db2 {
+    override fun sizeInBackEnd(query: Query<ReviewRow, Void>): Int = db {
         create.selectCount()
             .from(REVIEW)
             .leftJoin(CATEGORY).on(REVIEW.CATEGORY.eq(CATEGORY.ID))

@@ -9,11 +9,10 @@ import com.github.mvysny.kaributesting.v23.expectRows
 import com.vaadin.flow.component.UI
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.virtuallist.VirtualList
-import com.vaadin.starter.beveragebuddy.backend.CategoryDTO
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewRow
 import java.time.LocalDate
 
@@ -28,8 +27,8 @@ class ReviewsListTest : DynaTest({
     test("reviews listed") {
         // prepare testing data
         val cat = CategoryRecord(name = "Beers")
-        db2 { cat.attach().store() }
-        db2 { ReviewRecord(score = 1, name = "Good!", category = cat.id, date = LocalDate.now(), count = 1).attach().store() }
+        db { cat.attach().store() }
+        db { ReviewRecord(score = 1, name = "Good!", category = cat.id, date = LocalDate.now(), count = 1).attach().store() }
         _get<VirtualList<ReviewRow>>().expectRows(1)
     }
 

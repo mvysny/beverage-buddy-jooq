@@ -14,10 +14,10 @@ private val jooqContextThreadLocal = ThreadLocal<JooqContextInt>()
  * Makes sure given block is executed in a DB transaction. When the block finishes normally, the transaction commits;
  * if the block throws any exception, the transaction is rolled back.
  *
- * Example of use: `db2 { create.query("yada yada") }`
+ * Example of use: `db { create.query("yada yada") }`
  * @param block the block to run in the transaction.
  */
-fun <R> db2(block: JooqContext.() -> R): R {
+fun <R> db(block: JooqContext.() -> R): R {
     var ctx: JooqContextInt? = jooqContextThreadLocal.get()
     if (ctx != null) {
         return ctx.ctx.block()

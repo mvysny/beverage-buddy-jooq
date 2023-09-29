@@ -23,7 +23,7 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryReco
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.*
 import java.time.LocalDate
 
@@ -101,7 +101,7 @@ class ReviewEditorDialog(private val onReviewsChanged: (ReviewRecord) -> Unit) {
             "Delete",
             true
         ) {
-            db2 { item.attach().delete() }
+            db { item.attach().delete() }
             Notification.show("Beverage successfully deleted.", 3000, Notification.Position.BOTTOM_START)
             frame.close()
             onReviewsChanged(item)
@@ -112,7 +112,7 @@ class ReviewEditorDialog(private val onReviewsChanged: (ReviewRecord) -> Unit) {
         val frame: EditorDialogFrame<ReviewRecord> = EditorDialogFrame(ReviewEditorForm())
         frame.onSaveItem = {
             val creating: Boolean = review.id == null
-            db2 { review.attach().store() }
+            db { review.attach().store() }
             val op = if (creating) "added" else "saved"
             Notification.show("Beverage successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onReviewsChanged(review)
