@@ -117,11 +117,10 @@ fun <R: UpdatableRecord<R>> R.attach(): R {
 
 @Suppress("UNCHECKED_CAST")
 val <R : Record> Table<R>.idField: TableField<R, Long?>
-    get() = javaClass.getDeclaredMethod("getID").invoke(this@idField) as TableField<R, Long?>
-var <R: TableRecord<R>> TableRecord<R>.id: Long?
-    get() = get(table.idField)
-    set(value) {
-        set(table.idField, value)
+    get() {
+        val idFields = primaryKey!!.fields
+        require(idFields.size == 1) { "${this@idField} has no PK or a composite one: ${idFields}" }
+        return idFields[0] as TableField<R, Long?>
     }
 
 fun <R : Record> Table<R>.getById(id: Long): R = db2 {

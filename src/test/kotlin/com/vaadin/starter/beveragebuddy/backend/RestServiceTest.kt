@@ -4,11 +4,13 @@ import com.github.mvysny.dynatest.DynaNodeGroup
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.DynaTestDsl
 import com.github.mvysny.dynatest.expectList
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import eu.vaadinonkotlin.restclient.*
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
 import java.net.http.HttpClient
+import kotlin.test.expect
 
 /**
  * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
@@ -19,13 +21,9 @@ class PersonRestClient(val baseUrl: String) {
         require(!baseUrl.endsWith("/")) { "$baseUrl must not end with a slash" }
     }
     private val client: HttpClient = HttpClientVokPlugin.httpClient!!
-    fun getAllCategories(): List<Category> {
+    fun getAllCategories(): String {
         val request = "$baseUrl/categories".buildUrl().buildRequest()
-        return client.exec(request) { response -> response.jsonArray(Category::class.java) }
-    }
-    fun getAllReviews(): List<Review> {
-        val request = "$baseUrl/reviews".buildUrl().buildRequest()
-        return client.exec(request) { response -> response.jsonArray(Review::class.java) }
+        return client.exec(request) { response -> response.body().reader().readText() }
     }
 }
 
@@ -56,10 +54,10 @@ class RestServiceTest : DynaTest({
     beforeEach { client = PersonRestClient("http://localhost:9876/rest") }
 
     test("categories smoke test") {
-        expectList() { client.getAllCategories() }
+        expect("[]") { client.getAllCategories() }
     }
-
-    test("reviews smoke test") {
-        expectList() { client.getAllReviews() }
+    test("one category") {
+        db2 { CategoryRecord(name = "Foo").attach().store() }
+        expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategories() }
     }
 })

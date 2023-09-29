@@ -15,7 +15,6 @@ class JavalinRestServlet : HttpServlet() {
     val javalin = Javalin.createStandalone().apply {
         gsonMapper(VokRest.gson)
         get("/rest/categories") { ctx -> ctx.json(Category.findAll()) }
-        crud2("/rest/reviews", Review.getCrudHandler(false))
     }.javalinServlet()
 
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) {
