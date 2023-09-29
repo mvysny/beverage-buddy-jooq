@@ -1,5 +1,7 @@
 package com.vaadin.starter.beveragebuddy.backend
 
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
 import eu.vaadinonkotlin.rest.*
 import io.javalin.Javalin
 import jakarta.servlet.annotation.WebServlet
@@ -14,7 +16,7 @@ import jakarta.servlet.http.HttpServletResponse
 class JavalinRestServlet : HttpServlet() {
     val javalin = Javalin.createStandalone().apply {
         gsonMapper(VokRest.gson)
-        get("/rest/categories") { ctx -> ctx.json(Category.findAll()) }
+        get("/rest/categories") { ctx -> ctx.json(CATEGORY.findAll().dto()) }
     }.javalinServlet()
 
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) {

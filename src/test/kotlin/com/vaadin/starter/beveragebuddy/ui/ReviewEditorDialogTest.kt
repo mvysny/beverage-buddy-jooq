@@ -6,8 +6,11 @@ import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
-import com.vaadin.starter.beveragebuddy.backend.Category
+import com.vaadin.starter.beveragebuddy.backend.CategoryDTO
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
@@ -49,15 +52,15 @@ class ReviewEditorDialogTest : DynaTest({
     }
 
     test("create new review") {
-        val cat = Category(name = "Beers")
-        cat.save()
+        val cat = CategoryRecord(name = "Beers")
+        db2 { cat.attach().store() }
 
         _get<Button> { text = "New review (Alt+N)" }._click()
 
         _expectOne<EditorDialogFrame<*>>()
         _get<TextField> { label = "Beverage name" }._value = "Test"
         _get<IntegerField> { label = "Times tasted" }._value = 1
-        _get<ComboBox<Category>> { label = "Choose a category" }._value = cat
+        _get<ComboBox<CategoryRecord>> { label = "Choose a category" }._value = cat
         _get<ComboBox<String>> { label = "Mark a score" } .selectByLabel("3")
 
         _get<Button> { text = "Create" } ._click()

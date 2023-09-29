@@ -16,18 +16,15 @@
 package com.vaadin.starter.beveragebuddy.ui.reviews
 
 import com.github.mvysny.karibudsl.v10.*
-import com.github.vokorm.dataloader.dataLoader
 import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.binder.Binder
-import com.vaadin.starter.beveragebuddy.backend.Category
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.ui.*
-import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
-import eu.vaadinonkotlin.vaadin.vokdb.toId
-import eu.vaadinonkotlin.vaadin.vokdb.withStringFilterOn
 import java.time.LocalDate
 
 /**
@@ -52,7 +49,7 @@ class ReviewEditorForm : FormLayout(), EditorForm<ReviewRecord> {
                 .toByte()
                 .bind(ReviewRecord::count)
         }
-        comboBox<Category>("Choose a category") {
+        comboBox<CategoryRecord>("Choose a category") {
             // we need to show a list of options for the user to choose from. For every option we need to retain at least:
             // 1. the category ID (to bind it to Review::category)
             // 2. the category name (to show it to the user when the combobox's option list is expanded)
@@ -65,10 +62,14 @@ class ReviewEditorForm : FormLayout(), EditorForm<ReviewRecord> {
             isAllowCustomValue = false
 
             // provide the list of options as a DataProvider, providing instances of Category
-            setItems(Category.dataLoader.withStringFilterOn(Category::name))
+            setItems(
+                CATEGORY.dataProvider
+                    .setSortFields(CATEGORY.NAME.asc())
+                    .withStringFilter { CATEGORY.NAME.likeIgnoreCase("$it%") }
+            )
 
             // bind the combo box to the Review::category field so that changes done by the user are stored.
-            bind(binder).toId().bind(ReviewRecord::category)
+            bind(binder).toId(CATEGORY.ID).bind(ReviewRecord::category)
         }
         datePicker("Choose the date") {
             max = LocalDate.now()

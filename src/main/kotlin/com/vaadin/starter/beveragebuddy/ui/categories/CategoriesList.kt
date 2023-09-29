@@ -32,6 +32,7 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.*
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db2
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.getById
@@ -116,7 +117,13 @@ class CategoriesList : KComposite() {
     }
 
     private fun deleteCategory(row: CategoryRow) {
-        db2 { row.category.attach().delete() }
+        db2 {
+            create.update(REVIEW)
+                .setNull(REVIEW.CATEGORY)
+                .where(REVIEW.CATEGORY.eq(row.category.id!!))
+                .execute()
+            row.category.attach().delete()
+        }
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         updateView()
     }

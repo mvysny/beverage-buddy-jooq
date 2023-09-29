@@ -13,10 +13,10 @@ import java.io.Serializable
 import java.util.stream.Stream
 
 class CategoryDataProvider :
-    AbstractJooqDataProvider<CategoryRow, Void>(CATEGORY), ConfigurableFilterDataProvider<CategoryRow, Void, String> {
+    AbstractJooqDataProvider<CategoryRow, String>(CATEGORY), ConfigurableFilterDataProvider<CategoryRow, String, String> {
 
-    private fun getWhereClause(): Condition {
-        val f = (filter?:"").trim()
+    private fun getWhereClause(query: Query<CategoryRow, String>): Condition {
+        val f = (query.filter.orElse(null) ?: filter).trim()
         return if (f.isEmpty()) {
             DSL.trueCondition()
         } else {
@@ -24,11 +24,11 @@ class CategoryDataProvider :
         }
     }
 
-    override fun fetchFromBackEnd(query: Query<CategoryRow, Void>): Stream<CategoryRow> {
+    override fun fetchFromBackEnd(query: Query<CategoryRow, String>): Stream<CategoryRow> {
         val result: List<CategoryRow> = db2 {
             create.select(CATEGORY.asterisk(), reviewCountField)
                 .from(CATEGORY)
-                .where(getWhereClause())
+                .where(getWhereClause(query))
                 .orderByQuery(query)
                 .limit(query.limit)
                 .offset(query.offset)
@@ -37,10 +37,10 @@ class CategoryDataProvider :
         return result.stream()
     }
 
-    override fun sizeInBackEnd(query: Query<CategoryRow, Void>): Int = db2 {
+    override fun sizeInBackEnd(query: Query<CategoryRow, String>): Int = db2 {
         create.selectCount()
             .from(CATEGORY)
-            .where(getWhereClause())
+            .where(getWhereClause(query))
             .fetchOneInt()
     }
 
@@ -50,11 +50,14 @@ class CategoryDataProvider :
                 .cast(Int::class.java)
     }
 
-    private var filter: String? = null
+    private var filter: String = ""
 
     override fun setFilter(filter: String?) {
-        this.filter = filter
-        refreshAll()
+        val newFilter = (filter ?: "").trim()
+        if (this.filter != newFilter) {
+            this.filter = newFilter
+            refreshAll()
+        }
     }
 }
 

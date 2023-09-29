@@ -25,7 +25,7 @@ import java.util.*
  * @property F the filter accepted by the backend calls; may be a String or a full-blown filter bean. The best practice is
  * to convert [Query.filter] to JOOQ [Condition], then pass it to the JOOQ query.
  */
-abstract class AbstractJooqDataProvider<T, F>(val table: Table<*>) : AbstractBackEndDataProvider<T, F>() {
+abstract class AbstractJooqDataProvider<T, F>(private val table: Table<*>) : AbstractBackEndDataProvider<T, F>() {
 
     /**
      * Additional fields that may appear in [QuerySortOrder.sorted]. By default, all [table] fields are considered by
