@@ -10,6 +10,7 @@ import com.vaadin.starter.beveragebuddy.backend.Category
 import com.vaadin.starter.beveragebuddy.backend.Review
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
 import kotlin.test.expect
 
@@ -64,7 +65,7 @@ class ReviewEditorDialogTest : DynaTest({
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
         expectNotifications("Beverage successfully added.")
 
-        val review = Review.single()
+        val review = REVIEW.single()
         expect("Test") { review.name }
         expect(3) { review.score }
         expect(cat.id) { review.category }
