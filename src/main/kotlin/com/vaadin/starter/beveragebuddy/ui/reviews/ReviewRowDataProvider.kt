@@ -13,12 +13,19 @@ import org.jooq.impl.DSL
 import java.io.Serializable
 import java.util.stream.Stream
 
+/**
+ * Contains [ReviewRecord] joined with [com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord] to hold the
+ * category name. We're avoiding the N+1 SELECT problem here.
+ */
 data class ReviewRow(
     val review: ReviewRecord,
     val categoryName: String?
 ) : Serializable
 
-class ReviewDataProvider : AbstractJooqDataProvider<ReviewRow, Void>(REVIEW),
+/**
+ * Fetches [ReviewRow].
+ */
+class ReviewRowDataProvider : AbstractJooqDataProvider<ReviewRow, Void>(REVIEW),
     ConfigurableFilterDataProvider<ReviewRow, Void, String> {
 
     private var filter: String = ""

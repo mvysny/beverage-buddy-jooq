@@ -14,6 +14,8 @@ import java.util.stream.Stream
 
 /**
  * Provides instances of given record [R]. Accepts filter of type [Condition].
+ * Use [withStringFilter] to use this data provider easily from a ComboBox.
+ * Use [setSortFields] to set the default record ordering.
  */
 class JooqRecordDataProvider<R : Record>(private val table: Table<R>) :
     AbstractJooqDataProvider<R, Condition>(table),

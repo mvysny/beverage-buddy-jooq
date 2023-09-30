@@ -44,7 +44,7 @@ class ReviewsList : KComposite() {
     private lateinit var header: H3
     private lateinit var reviewsGrid: VirtualList<ReviewRow>
     private val editDialog = ReviewEditorDialog { dp.refreshAll() }
-    private val dp = ReviewDataProvider()
+    private val dp = ReviewRowDataProvider()
 
     private val root = ui {
         verticalLayout(false) {

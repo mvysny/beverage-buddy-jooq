@@ -12,7 +12,7 @@ import org.jooq.impl.DSL
 import java.io.Serializable
 import java.util.stream.Stream
 
-class CategoryDataProvider :
+class CategoryRowDataProvider :
     AbstractJooqDataProvider<CategoryRow, Void>(CATEGORY), ConfigurableFilterDataProvider<CategoryRow, Void, String> {
 
     private fun getWhereClause(): Condition {

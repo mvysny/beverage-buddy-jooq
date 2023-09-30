@@ -52,7 +52,7 @@ class CategoriesList : KComposite() {
     lateinit var gridContextMenu: GridContextMenu<CategoryRow>
 
     private val editorDialog = CategoryEditorDialog { dp.refreshAll() }
-    private val dp = CategoryDataProvider()
+    private val dp = CategoryRowDataProvider()
 
     private val root = ui {
         verticalLayout(false) {

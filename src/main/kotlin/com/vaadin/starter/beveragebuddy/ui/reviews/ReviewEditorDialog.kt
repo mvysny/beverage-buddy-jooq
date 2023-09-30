@@ -51,9 +51,9 @@ class ReviewEditorForm : FormLayout(), EditorForm<ReviewRecord> {
         }
         comboBox<CategoryRecord>("Choose a category") {
             // we need to show a list of options for the user to choose from. For every option we need to retain at least:
-            // 1. the category ID (to bind it to Review::category)
+            // 1. the category ID (to bind it to ReviewRecord::category)
             // 2. the category name (to show it to the user when the combobox's option list is expanded)
-            // since the Category class already provides these values, we will simply use that as the data source for the options.
+            // since the CategoryRecord class already provides these values, we will simply use that as the data source for the options.
             //
             // now we need to configure the item label generator so that we can extract the name out of Category and display it to the user:
             setItemLabelGenerator { it.name }
@@ -61,7 +61,7 @@ class ReviewEditorForm : FormLayout(), EditorForm<ReviewRecord> {
             // can't create new Categories here
             isAllowCustomValue = false
 
-            // provide the list of options as a DataProvider, providing instances of Category
+            // populate dropdown contents from a DataProvider, providing instances of CategoryRecord
             setItems(
                 CATEGORY.dataProvider
                     .setSortFields(CATEGORY.NAME.asc())
