@@ -4,11 +4,9 @@
 # Beverage Buddy App Starter for Vaadin
 :coffee::tea::sake::baby_bottle::beer::cocktail::tropical_drink::wine_glass:
 
-** NOTE: CONVERSION TO JOOQ ONGOING **. Please wait until the conversion has been finalized properly.
-
-This is a [Vaadin-on-Kotlin](http://vaadinonkotlin.eu) example application,
-used to demonstrate features of the Vaadin Flow Java framework.
-A full-stack app: uses the H2 database instead of a dummy service. Requires Java 17+.
+This is a [Vaadin](https://vaadin.com/) example application.
+A full-stack app: uses the H2 database instead of a dummy service; uses [JOOQ](https://www.jooq.org/)
+to access the database. Requires Java 17+. Does not run on Spring.
 
 The Starter demonstrates the core Vaadin Flow concepts:
 * [Building UIs in Kotlin](https://github.com/mvysny/karibu-dsl) with components
@@ -35,15 +33,21 @@ on how you run, develop and package this Vaadin-Boot-based app.
 ## Database
 
 Without the database, we could store the categories and reviews into session only, which would then be gone when the server rebooted.
-We will use the [Vaadin-on-Kotlin](http://vaadinonkotlin.eu/)'s SQL database support. To make things easy we'll
+We will use the JOOQ library to ease access to the SQL. To make things easy we'll
 use in-memory H2 database which will be gone when the server is rebooted - *touche* :-D
 
 We will use [Flyway](https://flywaydb.org/) for database migration. Check out [Bootstrap.kt](src/main/kotlin/com/vaadin/starter/beveragebuddy/Bootstrap.kt)
 on how the [migration scripts](src/main/resources/db/migration) are ran when the app is initialized.
 
-The [Category](src/main/kotlin/com/vaadin/starter/beveragebuddy/backend/Category.kt)
-and [Review](src/main/kotlin/com/vaadin/starter/beveragebuddy/backend/Review.kt)
-entities are mapped to the database tables; inheriting from Entity and Dao
-will make it inherit bunch of useful methods such as `findAll()` and `save()`. It will also gain means of
-providing all of its instances via a `DataProvider`. See the [CategoriesList.kt](src/main/kotlin/com/vaadin/starter/beveragebuddy/ui/categories/CategoriesList.kt)
-Grid configuration for details.
+JOOQ records are generated in the [com.vaadin.starter.beveragebuddy.backend.jooq](src/main/kotlin/com/vaadin/starter/beveragebuddy/backend/jooq/)
+package, including the `CategoryRecord` and `ReviewRecord`. See `JooqGenerator` on how to
+generate the records. There are no DTOs - the records are passed around in the app and edited directly in the forms.
+The records therefore contain jakarta.validation annotations to validate user input.
+Careful when re-generating records, since those annotations will be lost.
+
+The [simplejooq](src/main/kotlin/com/vaadin/starter/beveragebuddy/backend/simplejooq/)
+package contains useful functions to access database without Spring:
+
+* The `db{}` function runs given block in a transaction. You can't go simpler than that.
+* The `DAO` collection of extension functions, allowing you to write `CATEGORY.getById()` and similar.
+* Validations

@@ -23,3 +23,9 @@ fun <R : Record> Table<R>.deleteAll(): Int =
 
 fun <R : Record> Table<R>.findAll(): List<R> =
     db { create.selectFrom(this@findAll).fetch() }
+
+// @todo mavi there's no way to override the functions, e.g. `deleteAll()` function
+// to detach from foreign keys etc. Maybe refactor to the Dao<R, ID> and DaoOfAny<R> classes
+// which would contain overridable methods.
+// Note that this would still disallow the Record instance methods overriding, e.g. delete(),
+// or store() which would perform validation. Well you can't have everything :shrug:
