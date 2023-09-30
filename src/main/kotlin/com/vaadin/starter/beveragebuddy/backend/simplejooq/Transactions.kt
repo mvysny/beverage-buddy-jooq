@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.SQLException
 
+/**
+ * Holds reference to the current JDBC connection when running in the `db{}` block.
+ */
 private val jooqContextThreadLocal = ThreadLocal<JooqContextInt>()
 
 /**
@@ -20,15 +23,13 @@ private val jooqContextThreadLocal = ThreadLocal<JooqContextInt>()
 fun <R> db(block: JooqContext.() -> R): R {
     var ctx: JooqContextInt? = jooqContextThreadLocal.get()
     if (ctx != null) {
+        // already in a transaction - nested call to db{}. Simply run the block right away.
         return ctx.ctx.block()
     }
 
+    // no transaction. Obtain the JDBC connection and create the context.
     val jdbcConnection = SimpleJooq.dataSource.connection
-    val create = DSL.using(jdbcConnection, SQLDialect.H2)
-    // we don't want Records to carry the connection aroun since it will be
-    // invalidated by the pool once the db2{} block ends.
-    create.configuration().settings().withAttachRecords(false)
-    ctx = JooqContextInt(JooqContext(create, jdbcConnection))
+    ctx = JooqContextInt.create(jdbcConnection)
 
     jooqContextThreadLocal.set(ctx)
     try {
@@ -48,12 +49,12 @@ class JooqContext(
     val jdbcConnection: Connection,
 )
 
-class JooqContextInt(
+private class JooqContextInt(
     val ctx: JooqContext
 ) : AutoCloseable {
     private val attachedRecords = mutableListOf<UpdatableRecord<*>>()
 
-    internal fun attach(record: UpdatableRecord<*>) {
+    fun attach(record: UpdatableRecord<*>) {
         record.attach(ctx.create.configuration())
         attachedRecords.add(record)
     }
@@ -71,6 +72,14 @@ class JooqContextInt(
     companion object {
         @JvmStatic
         internal val log = LoggerFactory.getLogger(JooqContext::class.java)
+
+        fun create(jdbcConnection: Connection): JooqContextInt {
+            val create = DSL.using(jdbcConnection, SQLDialect.H2)
+            // we don't want Records to carry the connection aroun since it will be
+            // invalidated by the pool once the db2{} block ends.
+            create.configuration().settings().withAttachRecords(false)
+            return JooqContextInt(JooqContext(create, jdbcConnection))
+        }
     }
 
     internal fun <R> runInTransaction(block: () -> R): R {
@@ -97,7 +106,7 @@ private fun currentJooqContext(): JooqContextInt =
     jooqContextThreadLocal.get() ?: throw IllegalStateException("Not running in transaction; call this function from the db{} block")
 
 /**
- * Attaches given record to this transaction so that you can call [UpdatableRecord.store] on it. Must be called from within the `db2{}` block.
+ * Attaches given record to this transaction so that you can call [UpdatableRecord.store] on it. Must be called from within the `db{}` block.
  *
  * Example of use:
  * ```kotlin
