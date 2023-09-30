@@ -43,10 +43,10 @@ class JooqRecordDataProvider<R : Record>(private val table: Table<R>) :
             .fetchOneInt()
     }
 
-    private var filter: Condition = DSL.trueCondition()
+    private var filter: Condition = DSL.noCondition()
 
     override fun setFilter(filter: Condition?) {
-        this.filter = filter ?: DSL.trueCondition()
+        this.filter = filter ?: DSL.noCondition()
         refreshAll()
     }
 }

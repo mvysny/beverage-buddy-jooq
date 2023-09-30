@@ -31,7 +31,7 @@ class ReviewRowDataProvider : AbstractJooqDataProvider<ReviewRow, Void>(REVIEW),
     private var filter: String = ""
 
     private fun getWhereClause(): Condition = if (filter.isEmpty()) {
-        DSL.trueCondition()
+        DSL.noCondition()
     } else {
         CATEGORY.NAME.likeIgnoreCase("$filter%")
             .or(REVIEW.SCORE.cast(String::class.java).likeIgnoreCase("$filter%"))

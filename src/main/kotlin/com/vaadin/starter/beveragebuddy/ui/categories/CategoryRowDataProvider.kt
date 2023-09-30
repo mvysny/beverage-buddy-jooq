@@ -18,7 +18,7 @@ class CategoryRowDataProvider :
     private fun getWhereClause(): Condition {
         val f = filter.trim()
         return if (f.isEmpty()) {
-            DSL.trueCondition()
+            DSL.noCondition()
         } else {
             CATEGORY.NAME.likeIgnoreCase("$f%")
         }

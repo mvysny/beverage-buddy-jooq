@@ -51,3 +51,20 @@ package contains useful functions to access database without Spring:
 * The `db{}` function runs given block in a transaction. You can't go simpler than that.
 * The `DAO` collection of extension functions, allowing you to write `CATEGORY.getById()` and similar.
 * Validations
+
+## Looking for jdbi-orm version?
+
+See the [beverage-buddy-vok](https://github.com/mvysny/beverage-buddy-vok) version for an example
+app using the [jdbi-orm](https://gitlab.com/mvysny/jdbi-orm) framework underneath.
+
+Advantages of jdbi-orm:
+
+* No generated classes. You write the entities yourself, with any utility functions you need.
+  No generator is going to overwrite those.
+* You can override built-in methods, e.g. `delete()`, to perform additional cleanup (e.g. set foreign keys to null)
+* Validation baked in and enabled by default: the entities are validated before they're saved or created.
+
+Disadvantages:
+
+* No generated classes - you need to write the entity classes yourself. However, you only
+  need to do that once.
