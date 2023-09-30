@@ -90,8 +90,8 @@ val <R : Record> Table<R>.dataProvider: JooqRecordDataProvider<R>
     get() = JooqRecordDataProvider(this)
 
 /**
- * Converts a JOOQ [TableRecord] to its ID and back. Handy when binding ComboBox
- * populated with JOOQ records to a bean property which holds the ID of that record.
+ * Converts a JOOQ [TableRecord] to its ID and back. Handy when binding
+ * `ComboBox<Record>` to a bean property which holds the ID of that record.
  */
 class RecordToIdConverter<R : TableRecord<R>, ID>(
     val idField: TableField<R, ID>
