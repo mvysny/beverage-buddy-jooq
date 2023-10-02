@@ -22,6 +22,9 @@ object ReviewDao : Dao<ReviewRecord, Long>(REVIEW) {
 
 val Review.dao: ReviewDao get() = ReviewDao
 
+/**
+ * The [CATEGORY] DAO with useful finder methods.
+ */
 object CategoryDao : Dao<CategoryRecord, Long>(CATEGORY) {
     override fun deleteAll() {
         db {
@@ -44,4 +47,7 @@ object CategoryDao : Dao<CategoryRecord, Long>(CATEGORY) {
     }
 }
 
+/**
+ * Enables you to write `CATEGORY.dao.findByName("Foo")`.
+ */
 val Category.dao: CategoryDao get() = CategoryDao

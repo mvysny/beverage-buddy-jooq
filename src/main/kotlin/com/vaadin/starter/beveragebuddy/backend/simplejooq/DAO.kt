@@ -120,7 +120,10 @@ open class Dao<R: Record, ID: Any>(table: Table<R>): DaoOfAny<R>(table) {
         }
     }
 
-    fun delete(record: R) {
+    /**
+     * Deletes given [record].
+     */
+    open fun delete(record: R) {
         deleteById(record.get(idField)!!)
     }
 }

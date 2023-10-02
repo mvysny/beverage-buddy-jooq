@@ -17,6 +17,20 @@ The Starter demonstrates the core Vaadin Flow concepts:
 * [Browserless testing](https://github.com/mvysny/karibu-testing): see the
   [test suite package](src/test/kotlin/com/vaadin/starter/beveragebuddy/ui) for the complete test implementation.
 
+On top of that, a very simple way of using JOOQ is demoed:
+
+* Running the `db {}` function runs the block in a transaction. Pure simplicity :)
+* `db` gives you access to `DSLContext`, so you can simply call `db { create.selectFrom(CATEGORY) ... }`
+* `db { CategoryRecord(name = "Foo").attach().store() }` creates a new record in a database - the record is attached
+  to the current transaction, enabling `store()`, `delete()` and other JOOQ record functions.
+* `CATEGORY.dao.findByName("Foo")` demoes the ability to write DAOs with useful finder methods.
+
+On top of that, the JOOQ-Vaadin integration is demoed as well:
+
+* See the `CategoryRowDataProvider` on how to return the outcome of a JOIN statement from Vaadin's `DataProvider`;
+* See `JooqRecordDataProvider` for a generic DataProvider returning instances of any Record.
+  Very handy for using in combination with a `ComboBox<CategoryRecord>`, see `ReviewEditorForm` for more details.
+
 This version of Beverage Buddy demoes the possibility of developing a Vaadin
 web application purely server-side in the Kotlin language. There is no
 JavaScript code in this project. If you'd like to see
