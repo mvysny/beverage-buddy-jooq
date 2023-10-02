@@ -38,11 +38,9 @@ object CategoryDao : Dao<CategoryRecord, Long>(CATEGORY) {
 
     fun existsWithName(name: String): Boolean = findByName(name) != null
 
-    fun delete(category: CategoryRecord) {
-        db {
-            create.update(REVIEW).setNull(REVIEW.CATEGORY).where(REVIEW.CATEGORY.eq(category.id!!)).execute()
-            deleteById(category.id!!)
-        }
+    override fun deleteById(id: Long) = db {
+        create.update(REVIEW).setNull(REVIEW.CATEGORY).where(REVIEW.CATEGORY.eq(id)).execute()
+        super.deleteById(id)
     }
 }
 

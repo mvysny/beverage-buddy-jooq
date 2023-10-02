@@ -119,4 +119,8 @@ open class Dao<R: Record, ID: Any>(table: Table<R>): DaoOfAny<R>(table) {
             create.deleteFrom(table).where(idField.eq(id)).execute()
         }
     }
+
+    fun delete(record: R) {
+        deleteById(record.get(idField)!!)
+    }
 }
