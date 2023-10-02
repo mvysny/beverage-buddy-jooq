@@ -37,6 +37,13 @@ object CategoryDao : Dao<CategoryRecord, Long>(CATEGORY) {
         db { create.fetchSingle(CATEGORY, CATEGORY.NAME.eq(name)) }
 
     fun existsWithName(name: String): Boolean = findByName(name) != null
+
+    fun delete(category: CategoryRecord) {
+        db {
+            create.update(REVIEW).setNull(REVIEW.CATEGORY).where(REVIEW.CATEGORY.eq(category.id!!)).execute()
+            deleteById(category.id!!)
+        }
+    }
 }
 
 val Category.dao: CategoryDao get() = CategoryDao

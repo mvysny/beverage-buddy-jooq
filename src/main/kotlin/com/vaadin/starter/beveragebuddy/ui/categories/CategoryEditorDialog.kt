@@ -83,7 +83,7 @@ class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> 
     }
 
     private fun delete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
-        db { item.attach().delete() }
+        CATEGORY.dao.delete(item)
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         frame.close()
         onCategoriesChanged(item)
