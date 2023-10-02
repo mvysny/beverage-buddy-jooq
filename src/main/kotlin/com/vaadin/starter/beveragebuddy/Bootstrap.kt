@@ -1,11 +1,14 @@
 package com.vaadin.starter.beveragebuddy
 
 import com.github.mvysny.kaributools.addMetaTag
+import com.vaadin.flow.component.notification.Notification
+import com.vaadin.flow.component.notification.NotificationVariant
 import com.vaadin.flow.component.page.AppShellConfigurator
 import com.vaadin.flow.component.page.BodySize
 import com.vaadin.flow.component.page.Viewport
 import com.vaadin.flow.server.ServiceInitEvent
 import com.vaadin.flow.server.VaadinServiceInitListener
+import com.vaadin.flow.server.VaadinSession
 import com.vaadin.flow.theme.Theme
 import com.vaadin.starter.beveragebuddy.backend.DemoData
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.SimpleJooq
@@ -81,6 +84,21 @@ class MyServiceInitListener : VaadinServiceInitListener {
             it.document.head().addMetaTag("apple-mobile-web-app-capable", "yes")
             it.document.head().addMetaTag("apple-mobile-web-app-status-bar-style", "black")
         }
+        event.source.addSessionInitListener { initSession(it.session) }
+    }
+
+    private fun initSession(session: VaadinSession) {
+        session.setErrorHandler {
+            log.error("Internal error", it.throwable)
+            val n = Notification.show("We're sorry, an internal error occurred", 3000, Notification.Position.TOP_CENTER)
+            n.addThemeVariants(NotificationVariant.LUMO_ERROR)
+            n.open()
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        private val log = LoggerFactory.getLogger(MyServiceInitListener::class.java)
     }
 }
 
