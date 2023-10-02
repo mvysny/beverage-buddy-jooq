@@ -49,7 +49,7 @@ The [simplejooq](src/main/kotlin/com/vaadin/starter/beveragebuddy/backend/simple
 package contains useful functions to access database without Spring:
 
 * The `db{}` function runs given block in a transaction. You can't go simpler than that.
-* The `DAO` collection of extension functions, allowing you to write `CATEGORY.getById()` and similar.
+* The `DAO` collection of extension functions, allowing you to write `CATEGORY.dao.getById()` and similar.
 * Validations
 
 ## Looking for jdbi-orm version?
