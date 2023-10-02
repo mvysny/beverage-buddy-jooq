@@ -39,6 +39,10 @@ a demo on how to create Polymer Templates, please head to the page of the
 
 See the [online demo](https://v-herd.eu/beverage-buddy-vok/).
 
+## To run:
+
+Run `Main.kt` `main()` function from your IDE, or run via `./gradlew run`.
+
 # Documentation
 
 Please see the [Vaadin Boot](https://github.com/mvysny/vaadin-boot#preparing-environment) documentation
