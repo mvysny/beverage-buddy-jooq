@@ -4,11 +4,11 @@ import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.kaributesting.v10.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.textfield.TextField
+import com.vaadin.starter.beveragebuddy.backend.dao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
 import kotlin.test.expect
 
@@ -31,7 +31,7 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { CATEGORY.single().name }
+        expect("Beer") { CATEGORY.dao.single().name }
     }
 
     test("edit existing category") {
@@ -49,6 +49,6 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully saved.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { CATEGORY.single().name }
+        expect("Beer") { CATEGORY.dao.single().name }
     }
 })

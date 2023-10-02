@@ -25,8 +25,8 @@ import com.vaadin.flow.component.virtuallist.VirtualList
 import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
+import com.vaadin.starter.beveragebuddy.backend.dao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.getById
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar
 import com.vaadin.starter.beveragebuddy.ui.getSize
@@ -60,7 +60,7 @@ class ReviewsList : KComposite() {
                 addClassName("reviews")
                 setRenderer(ComponentRenderer<ReviewItem, ReviewRow> { review ->
                     val item = ReviewItem(review)
-                    item.onEdit = { editDialog.edit(REVIEW.getById(review.review.id!!)) }
+                    item.onEdit = { editDialog.edit(REVIEW.dao.getById(review.review.id!!)) }
                     item
                 })
             }

@@ -6,12 +6,11 @@ import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.combobox.ComboBox
 import com.vaadin.flow.component.textfield.IntegerField
 import com.vaadin.flow.component.textfield.TextField
+import com.vaadin.starter.beveragebuddy.backend.dao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewEditorDialog
 import kotlin.test.expect
 
@@ -47,7 +46,7 @@ class ReviewEditorDialogTest : DynaTest({
 
         _expectOne<EditorDialogFrame<*>>()
         // no review has been created
-        expectList() { REVIEW.findAll().toList() }
+        expectList() { REVIEW.dao.findAll().toList() }
     }
 
     test("create new review") {
@@ -66,7 +65,7 @@ class ReviewEditorDialogTest : DynaTest({
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
         expectNotifications("Beverage successfully added.")
 
-        val review = REVIEW.single()
+        val review = REVIEW.dao.single()
         expect("Test") { review.name }
         expect(3) { review.score }
         expect(cat.id) { review.category }

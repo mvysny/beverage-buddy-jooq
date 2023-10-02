@@ -119,7 +119,7 @@ internal object DemoData {
         for (i in 0 until reviewCount) {
             val review = ReviewRecord()
             val beverage: MutableMap.MutableEntry<String, String> = beverages.random()
-            val category: CategoryRecord = CATEGORY.getByName(beverage.value)
+            val category: CategoryRecord = CATEGORY.dao.getByName(beverage.value)
             review.name = beverage.key
             val testDay: LocalDate = LocalDate.of(
                 1930 + Random.nextInt(88),

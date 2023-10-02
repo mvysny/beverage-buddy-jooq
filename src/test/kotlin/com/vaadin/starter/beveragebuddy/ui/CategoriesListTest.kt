@@ -16,8 +16,6 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.deleteAll
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.findAll
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryRow
 import kotlin.test.expect
@@ -38,7 +36,7 @@ fun DynaNodeGroup.usingApp() {
     afterEach { MockVaadin.tearDown() }
 
     // it's a good practice to clear up the db before every test, to start every test with a predefined state.
-    fun cleanupDb() { CATEGORY.deleteAllCategories(); REVIEW.deleteAll() }
+    fun cleanupDb() { CATEGORY.dao.deleteAll(); REVIEW.dao.deleteAll() }
     beforeEach { cleanupDb() }
     afterEach { cleanupDb() }
 }
@@ -107,7 +105,7 @@ class CategoriesListTest : DynaTest({
         _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Delete", CategoryRow(cat, 0))
 
         // check that the category has been deleted in the database.
-        expectList() { CATEGORY.findAll().toList() }
+        expectList() { CATEGORY.dao.findAll().toList() }
         _get<Grid<CategoryDTO>>().expectRows(0)
         expectNotifications("Category successfully deleted.")
     }

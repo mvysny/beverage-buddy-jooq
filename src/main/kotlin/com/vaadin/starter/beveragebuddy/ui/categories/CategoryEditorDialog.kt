@@ -56,7 +56,7 @@ class CategoryEditorForm(val category: CategoryRecord) : FormLayout(), EditorFor
     private fun isNameUnique(name: String?): Boolean {
         if (name.isNullOrBlank()) return true
         if (category.name == name && isEditing) return true
-        return !CATEGORY.existsWithName(name)
+        return !CATEGORY.dao.existsWithName(name)
     }
 }
 
@@ -66,7 +66,7 @@ class CategoryEditorForm(val category: CategoryRecord) : FormLayout(), EditorFor
  */
 class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> Unit) {
     private fun maybeDelete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
-        val reviewCount = REVIEW.getTotalCountForReviewsInCategory(item.id!!)
+        val reviewCount = REVIEW.dao.getTotalCountForReviewsInCategory(item.id!!)
         if (reviewCount == 0) {
             delete(frame, item)
         } else {

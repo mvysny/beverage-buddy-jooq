@@ -30,11 +30,11 @@ import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.renderer.ComponentRenderer
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
+import com.vaadin.starter.beveragebuddy.backend.dao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.getById
 import com.vaadin.starter.beveragebuddy.ui.*
 
 /**
@@ -103,7 +103,7 @@ class CategoriesList : KComposite() {
         }
 
     private fun edit(row: CategoryRow) {
-        editorDialog.edit(CATEGORY.getById(row.category.id!!))
+        editorDialog.edit(CATEGORY.dao.getById(row.category.id!!))
     }
 
     private fun updateView() {
