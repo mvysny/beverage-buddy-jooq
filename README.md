@@ -33,9 +33,7 @@ On top of that, the JOOQ-Vaadin integration is demoed as well:
 
 This version of Beverage Buddy demoes the possibility of developing a Vaadin
 web application purely server-side in the Kotlin language. There is no
-JavaScript code in this project. If you'd like to see
-a demo on how to create Polymer Templates, please head to the page of the
-[original Beverage Buddy App](https://github.com/vaadin/beverage-starter-flow) (in Java).
+JavaScript code in this project. We use Vaadin to avoid touching JavaScript after all.
 
 See the [online demo](https://v-herd.eu/beverage-buddy-vok/).
 
