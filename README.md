@@ -35,7 +35,7 @@ This version of Beverage Buddy demoes the possibility of developing a Vaadin
 web application purely server-side in the Kotlin language. There is no
 JavaScript code in this project. We use Vaadin to avoid touching JavaScript after all.
 
-See the [online demo](https://v-herd.eu/beverage-buddy-vok/).
+See the [online demo](https://v-herd.eu/beverage-buddy-jooq/).
 
 ## To run:
 
