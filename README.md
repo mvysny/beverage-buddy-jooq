@@ -86,3 +86,5 @@ Disadvantages:
 
 * No generated classes - you need to write the entity classes yourself. However, you only
   need to do that once.
+* Very little support for writing SELECTs from Java code. You write those as Strings instead.
+
