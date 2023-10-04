@@ -1,6 +1,5 @@
 package com.vaadin.starter.beveragebuddy.backend.simplejooq
 
-import com.vaadin.starter.beveragebuddy.ui.closeQuietly
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.UpdatableRecord
@@ -16,6 +15,19 @@ import java.sql.SQLException
 private val jooqContextThreadLocal = ThreadLocal<JooqContextInt>()
 
 /**
+ * Sets given [value] to this [ThreadLocal], then clears it when the block terminates (either successfully,
+ * or exceptionally).
+ */
+private fun <T, R> ThreadLocal<T>.scoped(value: T, block: () -> R): R {
+    set(value)
+    try {
+        return block()
+    } finally {
+        set(null)
+    }
+}
+
+/**
  * Makes sure given block is executed in a DB transaction. When the block finishes normally, the transaction commits;
  * if the block throws any exception, the transaction is rolled back.
  *
@@ -23,22 +35,21 @@ private val jooqContextThreadLocal = ThreadLocal<JooqContextInt>()
  * @param block the block to run in the transaction.
  */
 fun <R> db(block: JooqContext.() -> R): R {
-    var ctx: JooqContextInt? = jooqContextThreadLocal.get()
-    if (ctx != null) {
+    val currentContext: JooqContextInt? = jooqContextThreadLocal.get()
+    if (currentContext != null) {
         // already in a transaction - nested call to db{}. Simply run the block right away.
-        return ctx.ctx.block()
+        return currentContext.ctx.block()
     }
 
     // no transaction. Obtain the JDBC connection and create the context.
-    val jdbcConnection = SimpleJooq.dataSource.connection
-    ctx = JooqContextInt.create(jdbcConnection)
-
-    jooqContextThreadLocal.set(ctx)
-    try {
-        return ctx.runInTransaction { ctx.ctx.block() }
-    } finally {
-        jooqContextThreadLocal.set(null)
-        ctx.closeQuietly()
+    return SimpleJooq.dataSource.connection.use { jdbcConnection ->
+        // create the JooqContextInt
+        JooqContextInt.create(jdbcConnection).use { ctx ->
+            // set the JooqContextInt to the thread-local and run the block in transaction
+            jooqContextThreadLocal.scoped(ctx) {
+                ctx.runInTransaction { ctx.ctx.block() }
+            }
+        }
     }
 }
 
@@ -64,7 +75,6 @@ private class JooqContextInt(
     override fun close() {
         attachedRecords.forEach { it.detach() }
         attachedRecords.clear()
-        ctx.jdbcConnection.close()
     }
 
     companion object {

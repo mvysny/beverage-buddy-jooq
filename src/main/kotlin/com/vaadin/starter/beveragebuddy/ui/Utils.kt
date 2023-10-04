@@ -6,7 +6,6 @@ import com.vaadin.flow.data.binder.ValueContext
 import com.vaadin.flow.data.converter.Converter
 import com.vaadin.flow.data.provider.DataProvider
 import com.vaadin.flow.data.provider.Query
-import org.slf4j.LoggerFactory
 
 class IntToByteConverter : Converter<Int?, Byte> {
     override fun convertToModel(
@@ -28,11 +27,3 @@ fun <BEAN> Binder.BindingBuilder<BEAN, Int?>.toByte(): Binder.BindingBuilder<BEA
     withConverter(IntToByteConverter())
 
 fun <T, F> DataProvider<T, F>.getSize(filter: F? = null): Int = size(Query(filter))
-
-fun AutoCloseable.closeQuietly() {
-    try {
-        close()
-    } catch (e: Exception) {
-        LoggerFactory.getLogger(javaClass).warn("Failed to close $this", e)
-    }
-}
