@@ -112,5 +112,9 @@ class RecordToIdConverter<R : TableRecord<R>, ID>(
     }
 }
 
+/**
+ * Converts a JOOQ [TableRecord] to its ID and back. Handy when binding
+ * `ComboBox<Record>` to a bean property which holds the ID of that record.
+ */
 fun <T, R : TableRecord<R>, ID> Binder.BindingBuilder<T, R?>.toId(idField: TableField<R, ID>): Binder.BindingBuilder<T, ID?> =
     withConverter(RecordToIdConverter(idField))
