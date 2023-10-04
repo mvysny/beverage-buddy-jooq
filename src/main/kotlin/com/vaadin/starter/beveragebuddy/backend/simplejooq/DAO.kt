@@ -88,9 +88,9 @@ open class Dao<R: Record, ID: Any>(table: Table<R>): DaoOfAny<R>(table) {
     protected val idField: TableField<R, ID>
 
     init {
-        val pk =
-            requireNotNull(table.primaryKey) { "$table has no primary key" }
+        val pk = requireNotNull(table.primaryKey) { "$table has no primary key" }
         require(pk.fields.size == 1) { "$table doesn't have exactly one column for the primary key: ${pk.fields}" }
+        @Suppress("UNCHECKED_CAST")
         idField = pk.fields[0] as TableField<R, ID>
     }
 

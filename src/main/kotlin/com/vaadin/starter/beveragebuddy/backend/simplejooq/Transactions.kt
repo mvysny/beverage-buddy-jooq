@@ -1,15 +1,17 @@
 package com.vaadin.starter.beveragebuddy.backend.simplejooq
 
+import com.vaadin.starter.beveragebuddy.ui.closeQuietly
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.UpdatableRecord
 import org.jooq.impl.DSL
-import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.SQLException
 
 /**
  * Holds reference to the current JDBC connection when running in the `db{}` block.
+ *
+ * Replace with ScopedValue when targeting Java 21+
  */
 private val jooqContextThreadLocal = ThreadLocal<JooqContextInt>()
 
@@ -36,7 +38,7 @@ fun <R> db(block: JooqContext.() -> R): R {
         return ctx.runInTransaction { ctx.ctx.block() }
     } finally {
         jooqContextThreadLocal.set(null)
-        ctx.close()
+        ctx.closeQuietly()
     }
 }
 
@@ -62,20 +64,13 @@ private class JooqContextInt(
     override fun close() {
         attachedRecords.forEach { it.detach() }
         attachedRecords.clear()
-        try {
-            ctx.jdbcConnection.close()
-        } catch (e: SQLException) {
-            log.warn("Failed to close the JDBC Connection", e)
-        }
+        ctx.jdbcConnection.close()
     }
 
     companion object {
-        @JvmStatic
-        internal val log = LoggerFactory.getLogger(JooqContext::class.java)
-
         fun create(jdbcConnection: Connection): JooqContextInt {
             val create = DSL.using(jdbcConnection, SQLDialect.H2)
-            // we don't want Records to carry the connection aroun since it will be
+            // we don't want Records to carry the connection around since it will be
             // invalidated by the pool once the db2{} block ends.
             create.configuration().settings().withAttachRecords(false)
             return JooqContextInt(JooqContext(create, jdbcConnection))
@@ -84,20 +79,17 @@ private class JooqContextInt(
 
     internal fun <R> runInTransaction(block: () -> R): R {
         ctx.jdbcConnection.autoCommit = false
-        var success = false
         try {
             val result = block()
             ctx.jdbcConnection.commit()
-            success = true
             return result
-        } finally {
-            if (!success) {
-                try {
-                    ctx.jdbcConnection.rollback()
-                } catch (e: SQLException) {
-                    log.error("Failed to roll back the transaction", e)
-                }
+        } catch (e: Exception) {
+            try {
+                ctx.jdbcConnection.rollback()
+            } catch (rollbackException: SQLException) {
+                e.addSuppressed(rollbackException)
             }
+            throw e
         }
     }
 }
