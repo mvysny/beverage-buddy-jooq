@@ -25,21 +25,27 @@ class CategoryRecordTest : DynaTest({
         }
     }
 
+    test("create()") {
+        val cat = Category(name = "Foo")
+        cat.create()
+        expectList(cat) { db { CATEGORY.dao.findAll().toList() } }
+    }
+
     group("delete") {
         test("smoke") {
             val cat = Category(name = "Foo")
-            db { CATEGORY.dao.insert(cat) }
-            db { CATEGORY.dao.delete(cat) }
+            cat.create()
+            cat.delete()
             expectList() { db { CATEGORY.dao.findAll().toList() } }
         }
         test("deleting category fixes foreign keys") {
             val cat = Category(name = "Foo")
-            db { CATEGORY.dao.insert(cat) }
+            cat.create()
             val review = Review(name = "Foo", score = 1, date = LocalDate.now(), category = cat.id!!, count = 1)
-            db { REVIEW.dao.insert(review) }
+            review.create()
 
-            CATEGORY.dao.delete(cat)
-            expectList() { CATEGORY.dao.findAll().toList() }
+            cat.delete()
+            expectList() { db { CATEGORY.dao.findAll().toList() } }
             expect(null) { db { REVIEW.dao.single().category } }
         }
     }

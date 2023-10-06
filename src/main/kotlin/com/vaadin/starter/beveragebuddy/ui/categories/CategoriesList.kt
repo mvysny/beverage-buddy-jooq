@@ -103,7 +103,7 @@ class CategoriesList : KComposite() {
         }
 
     private fun edit(row: CategoryRow) {
-        editorDialog.edit(CATEGORY.dao.getById(row.category.id!!))
+        editorDialog.edit(db { CATEGORY.dao.getById(row.category.id!!) })
     }
 
     private fun updateView() {

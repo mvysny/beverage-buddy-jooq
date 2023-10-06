@@ -9,6 +9,7 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.ActivePojo
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.currentConfiguration
 import jakarta.validation.constraints.*
+import org.jooq.Configuration
 import org.jooq.impl.DAOImpl
 
 import java.io.Serializable
@@ -39,8 +40,7 @@ data class Review(
     var count: Byte? = null
 ): Serializable, ActivePojo<ReviewRecord, Review, Long> {
 
-    override val dao: DAOImpl<ReviewRecord, Review, Long>
-        get() = ReviewDao(currentConfiguration())
+    override fun dao(cfg: Configuration?): DAOImpl<ReviewRecord, Review, Long> = ReviewDao(cfg)
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

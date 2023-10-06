@@ -90,7 +90,7 @@ class CategoriesListTest : DynaTest({
 
         val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
-        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Edit (Alt+E)", CategoryRow(cat, 0))
+        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Edit (Alt+E)", CategoryRow(CategoryRecord(cat), 0))
 
         // make sure that the "Edit Category" dialog is opened
         _expectOne<EditorDialogFrame<*>>()
@@ -103,7 +103,7 @@ class CategoriesListTest : DynaTest({
 
         val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
-        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Delete", CategoryRow(cat, 0))
+        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Delete", CategoryRow(CategoryRecord(cat), 0))
 
         // check that the category has been deleted in the database.
         expectList() { CATEGORY.dao.findAll().toList() }

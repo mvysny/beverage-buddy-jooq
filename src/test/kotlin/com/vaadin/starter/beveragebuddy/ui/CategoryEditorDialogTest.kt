@@ -5,10 +5,11 @@ import com.github.mvysny.kaributesting.v10.*
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.backend.dao
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryEditorDialog
 import kotlin.test.expect
 
@@ -31,12 +32,12 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully added.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { CATEGORY.dao.single().name }
+        expect("Beer") { db { CATEGORY.dao.single().name } }
     }
 
     test("edit existing category") {
-        val cat = CategoryRecord(name = "Foo")
-        db { cat.attach().insert() }
+        val cat = Category(name = "Foo")
+        cat.create()
 
         CategoryEditorDialog {} .edit(cat)
 

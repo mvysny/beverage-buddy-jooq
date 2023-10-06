@@ -4,6 +4,7 @@
 package com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos
 
 
+import com.vaadin.starter.beveragebuddy.backend.CategoryDaoExt
 import com.vaadin.starter.beveragebuddy.backend.dao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.daos.CategoryDao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
@@ -13,6 +14,7 @@ import com.vaadin.starter.beveragebuddy.backend.simplejooq.currentConfiguration
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import org.jooq.Configuration
 import org.jooq.impl.DAOImpl
 
 import java.io.Serializable
@@ -29,8 +31,8 @@ data class Category(
     var name: String? = null
 ): Serializable, ActivePojo<CategoryRecord, Category, Long> {
 
-    override val dao: DAOImpl<CategoryRecord, Category, Long>
-        get() = CategoryDao(currentConfiguration())
+    override fun dao(cfg: Configuration?): DAOImpl<CategoryRecord, Category, Long> =
+        CategoryDaoExt(cfg)
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

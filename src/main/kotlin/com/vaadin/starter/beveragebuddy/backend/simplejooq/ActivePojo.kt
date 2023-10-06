@@ -1,6 +1,7 @@
 package com.vaadin.starter.beveragebuddy.backend.simplejooq
 
 import jakarta.validation.ConstraintViolationException
+import org.jooq.Configuration
 import org.jooq.UpdatableRecord
 import org.jooq.impl.DAOImpl
 
@@ -8,34 +9,38 @@ import org.jooq.impl.DAOImpl
  * An Active POJO: it is able to perform basic CRUD operations.
  */
 interface ActivePojo<R : UpdatableRecord<R>, THIS : Any, ID : Any> {
-    val dao: DAOImpl<R, THIS, ID>
+    fun dao(cfg: Configuration? = currentConfiguration()): DAOImpl<R, THIS, ID>
 
     @Suppress("UNCHECKED_CAST")
     private fun self(): THIS = this as THIS
 
+    private fun getId(): ID? = dao(null).getId(self())
+
     /**
      * Checks if this POJO is persistent (has a non-null ID).
      */
-    val isPersistent: Boolean get() = dao.getId(self()) != null
+    val isPersistent: Boolean get() = getId() != null
 
     fun create(validate: Boolean = true) {
         check(!isPersistent) { "POJO already persistent" }
         if (validate) {
             validate()
         }
-        db { dao.insert(self()) }
+        db { dao().insert(self()) }
+        check(isPersistent) { "ID has not been filled into the POJO" }
     }
 
     fun save(validate: Boolean = true) {
         if (validate) {
             validate()
         }
-        db { dao.merge(self()) }
+        db { dao().merge(self()) }
+        check(isPersistent) { "ID has not been filled into the POJO" }
     }
 
     fun delete() {
         check(isPersistent) { "POJO already persistent" }
-        db { dao.deleteById(dao.getId(self())) }
+        db { dao().deleteById(getId()!!) }
     }
 
     fun validate() {

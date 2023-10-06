@@ -4,6 +4,7 @@ import com.fatboyindustrial.gsonjavatime.Converters
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import io.javalin.Javalin
 import io.javalin.json.JSON_MAPPER_KEY
 import io.javalin.json.JsonMapper
@@ -25,7 +26,7 @@ import java.nio.charset.Charset
 class JavalinRestServlet : HttpServlet() {
     val javalin = Javalin.createStandalone().apply {
         gsonMapper(GsonBuilder().registerJavaTimeAdapters().create())
-        get("/rest/categories") { ctx -> ctx.json(CATEGORY.dao.findAll()) }
+        get("/rest/categories") { ctx -> ctx.json(db { CATEGORY.dao.findAll() }) }
     }.javalinServlet()
 
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) {

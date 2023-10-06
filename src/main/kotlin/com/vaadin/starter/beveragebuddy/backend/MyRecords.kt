@@ -10,9 +10,10 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.currentConfiguration
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.deleteAll
+import org.jooq.Configuration
 import org.jooq.impl.DSL
 
-class ReviewDaoExt : ReviewDao(currentConfiguration()) {
+class ReviewDaoExt(cfg: Configuration? = currentConfiguration()) : ReviewDao(cfg) {
     fun getTotalCountForReviewsInCategory(categoryId: Long): Int = db {
         val result = create.select(DSL.sum(REVIEW.COUNT))
             .from(REVIEW)
@@ -27,7 +28,7 @@ val Review.dao: ReviewDaoExt get() = ReviewDaoExt()
 /**
  * The [CATEGORY] DAO with useful finder methods.
  */
-class CategoryDaoExt : CategoryDao(currentConfiguration()) {
+class CategoryDaoExt(cfg: Configuration? = currentConfiguration()) : CategoryDao(cfg) {
     fun deleteAllAndClearReviewFKs() {
         db {
             create.update(REVIEW).setNull(REVIEW.CATEGORY).execute()
