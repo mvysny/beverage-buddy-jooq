@@ -76,4 +76,15 @@ open class CategoryRecord() : UpdatableRecordImpl<CategoryRecord>(Category.CATEG
         this.name = name
         resetChangedOnNotNull()
     }
+
+    /**
+     * Create a detached, initialised CategoryRecord
+     */
+    constructor(value: com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category?): this() {
+        if (value != null) {
+            this.id = value.id
+            this.name = value.name
+            resetChangedOnNotNull()
+        }
+    }
 }

@@ -58,7 +58,7 @@ class CategoriesListTest : DynaTest({
         db { CategoryRecord(name = "Beers").attach().store() }
 
         // now the "Categories" list should be displayed. Look up the Grid and assert on its contents.
-        val grid = _get<Grid<CategoryDTO>>()
+        val grid = _get<Grid<CategoryRecord>>()
         grid.expectRows(1)
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
     }
@@ -106,7 +106,7 @@ class CategoriesListTest : DynaTest({
 
         // check that the category has been deleted in the database.
         expectList() { CATEGORY.dao.findAll().toList() }
-        _get<Grid<CategoryDTO>>().expectRows(0)
+        _get<Grid<CategoryRecord>>().expectRows(0)
         expectNotifications("Category successfully deleted.")
     }
 })

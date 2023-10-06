@@ -199,4 +199,23 @@ open class FlywaySchemaHistoryRecord() : UpdatableRecordImpl<FlywaySchemaHistory
         this.success = success
         resetChangedOnNotNull()
     }
+
+    /**
+     * Create a detached, initialised FlywaySchemaHistoryRecord
+     */
+    constructor(value: com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.FlywaySchemaHistory?): this() {
+        if (value != null) {
+            this.installedRank = value.installedRank
+            this.version = value.version
+            this.description = value.description
+            this.type = value.type
+            this.script = value.script
+            this.checksum = value.checksum
+            this.installedBy = value.installedBy
+            this.installedOn = value.installedOn
+            this.executionTime = value.executionTime
+            this.success = value.success
+            resetChangedOnNotNull()
+        }
+    }
 }

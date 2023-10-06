@@ -140,4 +140,19 @@ open class ReviewRecord() : UpdatableRecordImpl<ReviewRecord>(Review.REVIEW), Re
         this.count = count
         resetChangedOnNotNull()
     }
+
+    /**
+     * Create a detached, initialised ReviewRecord
+     */
+    constructor(value: com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Review?): this() {
+        if (value != null) {
+            this.id = value.id
+            this.name = value.name
+            this.score = value.score
+            this.date = value.date
+            this.category = value.category
+            this.count = value.count
+            resetChangedOnNotNull()
+        }
+    }
 }

@@ -7,7 +7,7 @@ import org.jooq.meta.jaxb.Target
 */
 
 /**
- * By default it does nothing. To use this generator:
+ * Generates JOOQ classes. To use this generator:
  *
  * 1. Uncomment the `jooq-meta` and `jooq-codegen` in `build.gradle.kts` and load Gradle changes in IDEA
  * 2. Uncomment the code blocks in this file.
@@ -33,7 +33,9 @@ object JooqGenerator {
                             .withIncludes(".*")
                             .withInputSchema("PUBLIC")
                     ).withGenerate(
-                        Generate().withValidationAnnotations(true)
+                        Generate()
+                            .withValidationAnnotations(true)
+                            .withDaos(true)
                     ).withTarget(
                         Target()
                             .withPackageName("com.vaadin.starter.beveragebuddy.backend.jooq")
