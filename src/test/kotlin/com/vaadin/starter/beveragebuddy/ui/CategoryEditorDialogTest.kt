@@ -50,6 +50,6 @@ class CategoryEditorDialogTest : DynaTest({
         expectNotifications("Category successfully saved.")
 
         _expectNone<EditorDialogFrame<*>>()     // expect the dialog to close
-        expect("Beer") { CATEGORY.dao.single().name }
+        expect("Beer") { db { CATEGORY.dao.single().name } }
     }
 })

@@ -54,7 +54,7 @@ class CategoryEditorForm(val category: Category) : FormLayout(), EditorForm<Cate
     private fun isNameUnique(name: String?): Boolean {
         if (name.isNullOrBlank()) return true
         if (category.name == name && isEditing) return true
-        return !CATEGORY.dao.existsWithName(name)
+        return db { !CATEGORY.dao.existsWithName(name) }
     }
 }
 

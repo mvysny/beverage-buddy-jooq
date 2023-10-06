@@ -106,7 +106,7 @@ class CategoriesListTest : DynaTest({
         _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Delete", CategoryRow(CategoryRecord(cat), 0))
 
         // check that the category has been deleted in the database.
-        expectList() { CATEGORY.dao.findAll().toList() }
+        expectList() { db { CATEGORY.dao.findAll().toList() } }
         _get<Grid<CategoryRecord>>().expectRows(0)
         expectNotifications("Category successfully deleted.")
     }
