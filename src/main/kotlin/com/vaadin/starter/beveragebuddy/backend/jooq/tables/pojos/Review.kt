@@ -4,8 +4,7 @@
 package com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos
 
 
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.*
 
 import java.io.Serializable
 import java.time.LocalDate
@@ -17,15 +16,21 @@ import java.time.LocalDate
 @Suppress("UNCHECKED_CAST")
 data class Review(
     var id: Long? = null,
-    @get:NotNull
-    @get:Size(max = 200)
+    @get:Size(min = 3, max = 200)
+    @get:NotBlank
     var name: String? = null,
     @get:NotNull
+    @get:Min(1)
+    @get:Max(5)
     var score: Byte? = null,
     @get:NotNull
+    @get:PastOrPresent
     var date: LocalDate? = null,
+    @get:NotNull
     var category: Long? = null,
     @get:NotNull
+    @get:Min(1)
+    @get:Max(99)
     var count: Byte? = null
 ): Serializable {
 

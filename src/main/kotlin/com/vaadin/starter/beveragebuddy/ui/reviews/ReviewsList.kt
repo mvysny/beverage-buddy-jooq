@@ -27,6 +27,7 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.dao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.getById
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar
 import com.vaadin.starter.beveragebuddy.ui.getSize

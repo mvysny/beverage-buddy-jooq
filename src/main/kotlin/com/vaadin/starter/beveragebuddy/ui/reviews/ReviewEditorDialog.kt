@@ -19,9 +19,12 @@ import com.github.mvysny.karibudsl.v10.*
 import com.vaadin.flow.component.formlayout.FormLayout
 import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.binder.Binder
+import com.vaadin.starter.beveragebuddy.backend.dao
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Review
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.*
@@ -30,10 +33,10 @@ import java.time.LocalDate
 /**
  * A dialog for editing [Review] objects.
  */
-class ReviewEditorForm : FormLayout(), EditorForm<ReviewRecord> {
+class ReviewEditorForm : FormLayout(), EditorForm<Review> {
     override val itemType: String get() = "Review"
     // to propagate the changes made in the fields by the user, we will use binder to bind the field to the Review property.
-    override val binder: Binder<ReviewRecord> = beanValidationBinder()
+    override val binder: Binder<Review> = beanValidationBinder()
 
     init {
         responsiveSteps {
@@ -42,12 +45,12 @@ class ReviewEditorForm : FormLayout(), EditorForm<ReviewRecord> {
 
         textField("Beverage name") {
             // no need to have validators here: they are automatically picked up from the bean field.
-            bind(binder).trimmingConverter().bind(ReviewRecord::name)
+            bind(binder).trimmingConverter().bind(Review::name)
         }
         integerField("Times tasted") {
             bind(binder)
                 .toByte()
-                .bind(ReviewRecord::count)
+                .bind(Review::count)
         }
         comboBox<CategoryRecord>("Choose a category") {
             // we need to show a list of options for the user to choose from. For every option we need to retain at least:
@@ -69,31 +72,31 @@ class ReviewEditorForm : FormLayout(), EditorForm<ReviewRecord> {
             )
 
             // bind the combo box to the Review::category field so that changes done by the user are stored.
-            bind(binder).toId(CATEGORY.ID).bind(ReviewRecord::category)
+            bind(binder).toId(CATEGORY.ID).bind(Review::category)
         }
         datePicker("Choose the date") {
             max = LocalDate.now()
             min = LocalDate.of(1, 1, 1)
-            bind(binder).bind(ReviewRecord::date)
+            bind(binder).bind(Review::date)
         }
         comboBox<Int>("Mark a score") {
             isAllowCustomValue = false
             setItems((1..5).toList())
-            bind(binder).toByte().bind(ReviewRecord::score)
+            bind(binder).toByte().bind(Review::score)
         }
     }
 }
 
 /**
- * A dialog for editing [ReviewRecord] objects.
+ * A dialog for editing [Review] objects.
  * @property onReviewsChanged Callback when an item has been created/saved/deleted
  */
-class ReviewEditorDialog(private val onReviewsChanged: (ReviewRecord) -> Unit) {
+class ReviewEditorDialog(private val onReviewsChanged: (Review) -> Unit) {
     fun createNew() {
-        edit(ReviewRecord(date = LocalDate.now()))
+        edit(Review(date = LocalDate.now()))
     }
 
-    private fun maybeDelete(frame: EditorDialogFrame<ReviewRecord>, item: ReviewRecord) {
+    private fun maybeDelete(frame: EditorDialogFrame<Review>, item: Review) {
         ConfirmationDialog().open(
             "Delete beverage",
             "Are you sure you want to delete beverage '${item.name}'?",
@@ -101,18 +104,18 @@ class ReviewEditorDialog(private val onReviewsChanged: (ReviewRecord) -> Unit) {
             "Delete",
             true
         ) {
-            db { item.attach().delete() }
+            db { REVIEW.dao.delete(item) }
             Notification.show("Beverage successfully deleted.", 3000, Notification.Position.BOTTOM_START)
             frame.close()
             onReviewsChanged(item)
         }
     }
 
-    fun edit(review: ReviewRecord) {
-        val frame: EditorDialogFrame<ReviewRecord> = EditorDialogFrame(ReviewEditorForm())
+    fun edit(review: Review) {
+        val frame: EditorDialogFrame<Review> = EditorDialogFrame(ReviewEditorForm())
         frame.onSaveItem = {
             val creating: Boolean = review.id == null
-            db { review.attach().store() }
+            db { REVIEW.dao.merge(review) }
             val op = if (creating) "added" else "saved"
             Notification.show("Beverage successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onReviewsChanged(review)

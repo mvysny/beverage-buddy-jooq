@@ -4,6 +4,7 @@
 package com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos
 
 
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
@@ -16,8 +17,8 @@ import java.io.Serializable
 @Suppress("UNCHECKED_CAST")
 data class Category(
     var id: Long? = null,
-    @get:NotNull
     @get:Size(max = 200)
+    @get:NotBlank
     var name: String? = null
 ): Serializable {
 

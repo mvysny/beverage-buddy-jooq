@@ -2,15 +2,16 @@ package com.vaadin.starter.beveragebuddy.backend
 
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Review
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.daos.ReviewDao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.Dao
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.currentConfiguration
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import org.jooq.impl.DSL
 
-object ReviewDao : Dao<ReviewRecord, Long>(REVIEW) {
+class ReviewDaoExt : ReviewDao(currentConfiguration()) {
     fun getTotalCountForReviewsInCategory(categoryId: Long): Int = db {
         val result = create.select(DSL.sum(REVIEW.COUNT))
             .from(REVIEW)
@@ -20,7 +21,7 @@ object ReviewDao : Dao<ReviewRecord, Long>(REVIEW) {
     }
 }
 
-val Review.dao: ReviewDao get() = ReviewDao
+val Review.dao: ReviewDaoExt get() = ReviewDaoExt()
 
 /**
  * The [CATEGORY] DAO with useful finder methods.

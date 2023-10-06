@@ -1,5 +1,6 @@
 package com.vaadin.starter.beveragebuddy.backend.simplejooq
 
+import org.jooq.Configuration
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.UpdatableRecord
@@ -80,9 +81,6 @@ private class JooqContextInt(
     companion object {
         fun create(jdbcConnection: Connection): JooqContextInt {
             val create = DSL.using(jdbcConnection, SQLDialect.H2)
-            // we don't want Records to carry the connection around since it will be
-            // invalidated by the pool once the db2{} block ends.
-            create.configuration().settings().withAttachRecords(false)
             return JooqContextInt(JooqContext(create, jdbcConnection))
         }
     }
@@ -106,6 +104,8 @@ private class JooqContextInt(
 
 private fun currentJooqContext(): JooqContextInt =
     jooqContextThreadLocal.get() ?: throw IllegalStateException("Not running in transaction; call this function from the db{} block")
+
+fun currentConfiguration(): Configuration = currentJooqContext().ctx.create.configuration()
 
 /**
  * Attaches given record to this transaction so that you can call [UpdatableRecord.store] on it. Must be called from within the `db{}` block.

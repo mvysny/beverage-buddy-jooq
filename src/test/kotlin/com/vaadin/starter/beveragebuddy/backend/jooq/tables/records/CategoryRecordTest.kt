@@ -8,6 +8,7 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.isValid
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import java.time.LocalDate
 import kotlin.test.expect
@@ -38,7 +39,7 @@ class CategoryRecordTest : DynaTest({
 
             CATEGORY.dao.delete(cat)
             expectList() { CATEGORY.dao.findAll().toList() }
-            expect(null) { REVIEW.dao.single().category }
+            expect(null) { db { REVIEW.dao.single().category } }
         }
     }
 })
