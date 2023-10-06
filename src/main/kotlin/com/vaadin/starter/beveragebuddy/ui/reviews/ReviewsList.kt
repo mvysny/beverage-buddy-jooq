@@ -27,6 +27,7 @@ import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import com.vaadin.starter.beveragebuddy.backend.dao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.getById
 import com.vaadin.starter.beveragebuddy.ui.MainLayout
 import com.vaadin.starter.beveragebuddy.ui.Toolbar
@@ -61,7 +62,7 @@ class ReviewsList : KComposite() {
                 addClassName("reviews")
                 setRenderer(ComponentRenderer<ReviewItem, ReviewRow> { review ->
                     val item = ReviewItem(review)
-                    item.onEdit = { editDialog.edit(REVIEW.dao.getById(review.review.id!!)) }
+                    item.onEdit = { db { editDialog.edit(REVIEW.dao.getById(review.review.id!!)) } }
                     item
                 })
             }

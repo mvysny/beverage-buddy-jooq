@@ -64,24 +64,27 @@ class CategoryEditorForm(val category: Category) : FormLayout(), EditorForm<Cate
  */
 class CategoryEditorDialog(private val onCategoriesChanged: (Category) -> Unit) {
     private fun maybeDelete(frame: EditorDialogFrame<Category>, item: Category) {
-        val reviewCount = REVIEW.dao.getTotalCountForReviewsInCategory(item.id!!)
-        if (reviewCount == 0) {
-            delete(frame, item)
-        } else {
-            ConfirmationDialog().open(
-                "Delete Category “${item.name}”?",
-                "There are $reviewCount reviews associated with this category.",
-                "Deleting the category will mark the associated reviews as “undefined”. You may link the reviews to other categories on the edit page.",
-                "Delete",
-                true
-            ) {
+        db {
+            val reviewCount =
+                REVIEW.dao.getTotalCountForReviewsInCategory(item.id!!)
+            if (reviewCount == 0) {
                 delete(frame, item)
+            } else {
+                ConfirmationDialog().open(
+                    "Delete Category “${item.name}”?",
+                    "There are $reviewCount reviews associated with this category.",
+                    "Deleting the category will mark the associated reviews as “undefined”. You may link the reviews to other categories on the edit page.",
+                    "Delete",
+                    true
+                ) {
+                    db { delete(frame, item) }
+                }
             }
         }
     }
 
     private fun delete(frame: EditorDialogFrame<Category>, item: Category) {
-        CATEGORY.dao.delete(item)
+        item.delete()
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         frame.close()
         onCategoriesChanged(item)
@@ -95,7 +98,7 @@ class CategoryEditorDialog(private val onCategoriesChanged: (Category) -> Unit) 
         val frame = EditorDialogFrame(CategoryEditorForm(category))
         frame.onSaveItem = {
             val creating: Boolean = category.id == null
-            db { CATEGORY.dao.merge(category) }
+            category.save()
             val op: String = if (creating) "added" else "saved"
             Notification.show("Category successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onCategoriesChanged(category)

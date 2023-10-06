@@ -47,9 +47,24 @@ class CategoryDaoExt(cfg: Configuration? = currentConfiguration()) : CategoryDao
 
     fun existsWithName(name: String): Boolean = findByName(name) != null
 
-    override fun deleteById(id: Long) = db {
-        create.update(REVIEW).setNull(REVIEW.CATEGORY).where(REVIEW.CATEGORY.eq(id)).execute()
-        super.deleteById(id)
+    override fun deleteById(ids: Collection<Long>) {
+        db {
+            clearCategoryForReviews(ids.toSet())
+            super.deleteById(ids)
+        }
+    }
+
+    override fun delete(objects: Collection<com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category>) {
+        db {
+            clearCategoryForReviews(objects.map { it.id!! } .toSet())
+            super.delete(objects)
+        }
+    }
+
+    private fun clearCategoryForReviews(categoryIDs: Set<Long>) {
+        db {
+            create.update(REVIEW).setNull(REVIEW.CATEGORY).where(REVIEW.CATEGORY.`in`(categoryIDs)).execute()
+        }
     }
 }
 

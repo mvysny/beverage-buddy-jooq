@@ -22,7 +22,7 @@ fun <R : UpdatableRecord<R>, POJO: Any, ID: Any> DAOImpl<R, POJO, ID>.getById(id
 fun <R : UpdatableRecord<R>, POJO : Any, ID : Any> DAOImpl<R, POJO, ID>.single(): POJO =
     db {
         val single = create.fetchSingle(table)
-        mapper().map(single)!!
+        toPojo(single)
     }
 
 /**
@@ -31,7 +31,7 @@ fun <R : UpdatableRecord<R>, POJO : Any, ID : Any> DAOImpl<R, POJO, ID>.single()
 fun <R : UpdatableRecord<R>, POJO : Any, ID : Any> DAOImpl<R, POJO, ID>.findFirst(): POJO? =
     db {
         val r = create.selectFrom(table).offset(0).limit(1).fetch().firstOrNull()
-        if (r == null) null else mapper().map(r)!!
+        if (r == null) null else toPojo(r)
     }
 
 /**
@@ -42,3 +42,5 @@ fun <R : UpdatableRecord<R>, POJO : Any, ID : Any> DAOImpl<R, POJO, ID>.deleteAl
         create.deleteFrom(table).execute()
     }
 }
+
+fun <R : UpdatableRecord<R>, POJO : Any, ID : Any> DAOImpl<R, POJO, ID>.toPojo(record: R): POJO = mapper().map(record)!!

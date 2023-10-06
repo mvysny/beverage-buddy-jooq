@@ -31,15 +31,19 @@ interface ActivePojo<R : UpdatableRecord<R>, THIS : Any, ID : Any> {
     }
 
     fun save(validate: Boolean = true) {
-        if (validate) {
-            validate()
+        if (!isPersistent) {
+            create(validate)
+        } else {
+            if (validate) {
+                validate()
+            }
+            db { dao().merge(self()) }
+            check(isPersistent) { "ID has not been filled into the POJO" }
         }
-        db { dao().merge(self()) }
-        check(isPersistent) { "ID has not been filled into the POJO" }
     }
 
     fun delete() {
-        check(isPersistent) { "POJO already persistent" }
+        check(isPersistent) { "POJO not yet persistent" }
         db { dao().deleteById(getId()!!) }
     }
 

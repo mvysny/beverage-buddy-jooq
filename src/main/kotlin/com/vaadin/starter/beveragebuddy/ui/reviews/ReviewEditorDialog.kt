@@ -114,7 +114,7 @@ class ReviewEditorDialog(private val onReviewsChanged: (Review) -> Unit) {
         val frame: EditorDialogFrame<Review> = EditorDialogFrame(ReviewEditorForm())
         frame.onSaveItem = {
             val creating: Boolean = review.id == null
-            db { REVIEW.dao.merge(review) }
+            review.save()
             val op = if (creating) "added" else "saved"
             Notification.show("Beverage successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onReviewsChanged(review)
