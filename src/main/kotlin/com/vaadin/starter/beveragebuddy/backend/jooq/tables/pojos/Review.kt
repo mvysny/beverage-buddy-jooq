@@ -4,7 +4,12 @@
 package com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos
 
 
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.daos.ReviewDao
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.ActivePojo
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.currentConfiguration
 import jakarta.validation.constraints.*
+import org.jooq.impl.DAOImpl
 
 import java.io.Serializable
 import java.time.LocalDate
@@ -32,8 +37,10 @@ data class Review(
     @get:Min(1)
     @get:Max(99)
     var count: Byte? = null
-): Serializable {
+): Serializable, ActivePojo<ReviewRecord, Review, Long> {
 
+    override val dao: DAOImpl<ReviewRecord, Review, Long>
+        get() = ReviewDao(currentConfiguration())
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

@@ -24,11 +24,9 @@ import com.vaadin.flow.component.notification.Notification
 import com.vaadin.flow.data.binder.Binder
 import com.vaadin.flow.data.validator.StringLengthValidator
 import com.vaadin.starter.beveragebuddy.backend.*
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.ConfirmationDialog
 import com.vaadin.starter.beveragebuddy.ui.EditorForm
@@ -37,10 +35,10 @@ import com.vaadin.starter.beveragebuddy.ui.EditorDialogFrame
 /**
  * A form for editing [Category] objects.
  */
-class CategoryEditorForm(val category: CategoryRecord) : FormLayout(), EditorForm<CategoryRecord> {
+class CategoryEditorForm(val category: Category) : FormLayout(), EditorForm<Category> {
     private val isEditing get() = category.id != null
     override val itemType: String get() = "Category"
-    override val binder: Binder<CategoryRecord> = beanValidationBinder()
+    override val binder: Binder<Category> = beanValidationBinder()
     init {
         textField("Category Name") {
             bind(binder)
@@ -49,7 +47,7 @@ class CategoryEditorForm(val category: CategoryRecord) : FormLayout(), EditorFor
                             "Category name must contain at least 3 printable characters",
                             3, null))
                     .withValidator({ name -> isNameUnique(name) }, "Category name must be unique")
-                    .bind(CategoryRecord::name)
+                    .bind(Category::name)
         }
     }
 
@@ -64,8 +62,8 @@ class CategoryEditorForm(val category: CategoryRecord) : FormLayout(), EditorFor
  * Opens dialogs for editing [Category] objects.
  * @property onCategoriesChanged called when a category has been created/edited/deleted.
  */
-class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> Unit) {
-    private fun maybeDelete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
+class CategoryEditorDialog(private val onCategoriesChanged: (Category) -> Unit) {
+    private fun maybeDelete(frame: EditorDialogFrame<Category>, item: Category) {
         val reviewCount = REVIEW.dao.getTotalCountForReviewsInCategory(item.id!!)
         if (reviewCount == 0) {
             delete(frame, item)
@@ -82,7 +80,7 @@ class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> 
         }
     }
 
-    private fun delete(frame: EditorDialogFrame<CategoryRecord>, item: CategoryRecord) {
+    private fun delete(frame: EditorDialogFrame<Category>, item: Category) {
         CATEGORY.dao.delete(item)
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         frame.close()
@@ -90,14 +88,14 @@ class CategoryEditorDialog(private val onCategoriesChanged: (CategoryRecord) -> 
     }
 
     fun createNew() {
-        edit(CategoryRecord())
+        edit(Category())
     }
 
-    fun edit(category: CategoryRecord) {
+    fun edit(category: Category) {
         val frame = EditorDialogFrame(CategoryEditorForm(category))
         frame.onSaveItem = {
             val creating: Boolean = category.id == null
-            db { category.attach().store() }
+            db { CATEGORY.dao.merge(category) }
             val op: String = if (creating) "added" else "saved"
             Notification.show("Category successfully ${op}.", 3000, Notification.Position.BOTTOM_START)
             onCategoriesChanged(category)

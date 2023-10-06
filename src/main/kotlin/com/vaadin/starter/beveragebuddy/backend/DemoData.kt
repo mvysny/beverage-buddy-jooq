@@ -1,9 +1,11 @@
 package com.vaadin.starter.beveragebuddy.backend
 
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Review
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.ReviewRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import java.time.LocalDate
 import kotlin.random.Random
@@ -110,14 +112,14 @@ internal object DemoData {
 
     fun createDemoData() = db {
         // generate categories
-        BEVERAGES.values.distinct().forEach { name -> CategoryRecord(name = name).attach().insert() }
+        BEVERAGES.values.distinct().forEach { name -> Category(name = name).create() }
 
         /// generate reviews
         val reviewCount: Int = 20 + Random.nextInt(30)
         val beverages: List<MutableMap.MutableEntry<String, String>> = BEVERAGES.entries.toList()
 
         for (i in 0 until reviewCount) {
-            val review = ReviewRecord()
+            val review = Review()
             val beverage: MutableMap.MutableEntry<String, String> = beverages.random()
             val category: CategoryRecord = CATEGORY.dao.getByName(beverage.value)
             review.name = beverage.key
@@ -129,7 +131,7 @@ internal object DemoData {
             review.score = (1 + Random.nextInt(5)).toByte()
             review.category = category.id
             review.count = (1 + Random.nextInt(15)).toByte()
-            review.attach().insert()
+            review.create()
         }
     }
 }

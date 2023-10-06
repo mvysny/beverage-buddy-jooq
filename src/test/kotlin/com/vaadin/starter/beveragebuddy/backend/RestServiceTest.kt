@@ -3,8 +3,9 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.github.mvysny.dynatest.DynaNodeGroup
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.DynaTestDsl
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import eu.vaadinonkotlin.restclient.*
@@ -58,7 +59,7 @@ class RestServiceTest : DynaTest({
         expect("[]") { client.getAllCategories() }
     }
     test("one category") {
-        db { CategoryRecord(name = "Foo").attach().store() }
+        db { CATEGORY.dao.insert(Category(name = "Foo")) }
         expectMatch("""\[\{"id":.+,"name":"Foo"}]""".toRegex()) { client.getAllCategories() }
     }
 })

@@ -45,11 +45,10 @@ fun <R> db(block: JooqContext.() -> R): R {
     // no transaction. Obtain the JDBC connection and create the context.
     return SimpleJooq.dataSource.connection.use { jdbcConnection ->
         // create the JooqContextInt
-        JooqContextInt.create(jdbcConnection).use { ctx ->
-            // set the JooqContextInt to the thread-local and run the block in transaction
-            jooqContextThreadLocal.scoped(ctx) {
-                ctx.runInTransaction { ctx.ctx.block() }
-            }
+        val ctx = JooqContextInt.create(jdbcConnection)
+        // set the JooqContextInt to the thread-local and run the block in transaction
+        jooqContextThreadLocal.scoped(ctx) {
+            ctx.runInTransaction { ctx.ctx.block() }
         }
     }
 }
@@ -65,19 +64,7 @@ class JooqContext(
 
 private class JooqContextInt(
     val ctx: JooqContext
-) : AutoCloseable {
-    private val attachedRecords = mutableListOf<UpdatableRecord<*>>()
-
-    fun attach(record: UpdatableRecord<*>) {
-        record.attach(ctx.create.configuration())
-        attachedRecords.add(record)
-    }
-
-    override fun close() {
-        attachedRecords.forEach { it.detach() }
-        attachedRecords.clear()
-    }
-
+) {
     companion object {
         fun create(jdbcConnection: Connection): JooqContextInt {
             val create = DSL.using(jdbcConnection, SQLDialect.H2)
@@ -106,16 +93,3 @@ private fun currentJooqContext(): JooqContextInt =
     jooqContextThreadLocal.get() ?: throw IllegalStateException("Not running in transaction; call this function from the db{} block")
 
 fun currentConfiguration(): Configuration = currentJooqContext().ctx.create.configuration()
-
-/**
- * Attaches given record to this transaction so that you can call [UpdatableRecord.store] on it. Must be called from within the `db{}` block.
- *
- * Example of use:
- * ```kotlin
- * db2 { Category(name = "Foo").attach().insert() }
- * ```
- */
-fun <R: UpdatableRecord<R>> R.attach(): R {
-    currentJooqContext().attach(this)
-    return this
-}

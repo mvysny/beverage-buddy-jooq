@@ -25,7 +25,7 @@ import java.nio.charset.Charset
 class JavalinRestServlet : HttpServlet() {
     val javalin = Javalin.createStandalone().apply {
         gsonMapper(GsonBuilder().registerJavaTimeAdapters().create())
-        get("/rest/categories") { ctx -> ctx.json(CATEGORY.dao.findAll().dto()) }
+        get("/rest/categories") { ctx -> ctx.json(CATEGORY.dao.findAll()) }
     }.javalinServlet()
 
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) {

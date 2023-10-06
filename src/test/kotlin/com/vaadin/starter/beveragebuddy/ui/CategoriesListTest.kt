@@ -11,10 +11,10 @@ import com.vaadin.flow.component.grid.Grid
 import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.Bootstrap
 import com.vaadin.starter.beveragebuddy.backend.*
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.attach
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.deleteAll
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
@@ -56,7 +56,7 @@ class CategoriesListTest : DynaTest({
 
     test("grid lists all categories") {
         // prepare testing data
-        db { CategoryRecord(name = "Beers").attach().store() }
+        db { CATEGORY.dao.insert(Category(name = "Beers")) }
 
         // now the "Categories" list should be displayed. Look up the Grid and assert on its contents.
         val grid = _get<Grid<CategoryRecord>>()
@@ -73,7 +73,7 @@ class CategoriesListTest : DynaTest({
 
     test("edit existing category") {
         // prepare testing data
-        db { CategoryRecord(name = "Beers").attach().store() }
+        Category(name = "Beers").create()
 
         val grid = _get<Grid<CategoryRecord>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
@@ -85,8 +85,8 @@ class CategoriesListTest : DynaTest({
     }
 
     test("edit existing category via context menu") {
-        val cat = CategoryRecord(name = "Beers")
-        db { cat.attach().store() }
+        val cat = Category(name = "Beers")
+        cat.create()
 
         val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
@@ -98,8 +98,8 @@ class CategoriesListTest : DynaTest({
     }
 
     test("delete existing category via context menu") {
-        val cat = CategoryRecord(name = "Beers")
-        db { cat.attach().store() }
+        val cat = Category(name = "Beers")
+        cat.create()
 
         val grid = _get<Grid<CategoryRow>>()
         grid.expectRow(0, "Beers", "0", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")

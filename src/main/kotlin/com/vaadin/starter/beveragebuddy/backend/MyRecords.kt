@@ -2,13 +2,14 @@ package com.vaadin.starter.beveragebuddy.backend
 
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.Review
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.daos.CategoryDao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.daos.ReviewDao
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.Dao
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.currentConfiguration
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
+import com.vaadin.starter.beveragebuddy.backend.simplejooq.deleteAll
 import org.jooq.impl.DSL
 
 class ReviewDaoExt : ReviewDao(currentConfiguration()) {
@@ -26,16 +27,19 @@ val Review.dao: ReviewDaoExt get() = ReviewDaoExt()
 /**
  * The [CATEGORY] DAO with useful finder methods.
  */
-object CategoryDao : Dao<CategoryRecord, Long>(CATEGORY) {
-    override fun deleteAll() {
+class CategoryDaoExt : CategoryDao(currentConfiguration()) {
+    fun deleteAllAndClearReviewFKs() {
         db {
             create.update(REVIEW).setNull(REVIEW.CATEGORY).execute()
-            super.deleteAll()
+            deleteAll()
         }
     }
 
-    fun findByName(name: String): CategoryRecord? =
-        db { create.fetchOne(CATEGORY, CATEGORY.NAME.eq(name)) }
+    fun findByName(name: String): com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category? {
+        val cats = fetchByName(name)
+        check(cats.size <= 1)
+        return cats.firstOrNull()
+    }
 
     fun getByName(name: String): CategoryRecord =
         db { create.fetchSingle(CATEGORY, CATEGORY.NAME.eq(name)) }
@@ -51,4 +55,4 @@ object CategoryDao : Dao<CategoryRecord, Long>(CATEGORY) {
 /**
  * Enables you to write `CATEGORY.dao.findByName("Foo")`.
  */
-val Category.dao: CategoryDao get() = CategoryDao
+val Category.dao: CategoryDaoExt get() = CategoryDaoExt()
