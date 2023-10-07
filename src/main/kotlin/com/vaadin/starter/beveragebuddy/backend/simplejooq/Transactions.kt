@@ -92,4 +92,7 @@ private class JooqContextInt(
 private fun currentJooqContext(): JooqContextInt =
     jooqContextThreadLocal.get() ?: throw IllegalStateException("Not running in transaction; call this function from the db{} block")
 
+/**
+ * Returns the current JOOQ [Configuration]. Fails if the current thread is not running in the [db] method.
+ */
 fun currentConfiguration(): Configuration = currentJooqContext().ctx.create.configuration()

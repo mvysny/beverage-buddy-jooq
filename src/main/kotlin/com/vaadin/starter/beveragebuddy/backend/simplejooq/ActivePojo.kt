@@ -9,6 +9,11 @@ import org.jooq.impl.DAOImpl
  * An Active POJO: it is able to perform basic CRUD operations.
  */
 interface ActivePojo<R : UpdatableRecord<R>, THIS : Any, ID : Any> {
+    /**
+     * Returns the DAO to be used when running CRUD operations. By default, this
+     * function must be run from within the `db{}` block since it fetches JOOQ
+     * [Configuration] from [currentConfiguration].
+     */
     fun dao(cfg: Configuration? = currentConfiguration()): DAOImpl<R, THIS, ID>
 
     @Suppress("UNCHECKED_CAST")
