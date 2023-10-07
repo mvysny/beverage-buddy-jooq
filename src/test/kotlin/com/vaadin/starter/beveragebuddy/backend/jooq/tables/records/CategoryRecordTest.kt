@@ -19,16 +19,24 @@ class CategoryRecordTest : DynaTest({
 
     group("validation") {
         test("smoke") {
-            expect(false) { CategoryRecord().isValid }
-            expect(false) { CategoryRecord(name = "  ").isValid }
-            expect(true) { CategoryRecord(name = "F").isValid }
+            expect(false) { Category().isValid }
+            expect(false) { Category(name = "  ").isValid }
+            expect(true) { Category(name = "F").isValid }
         }
     }
 
-    test("create()") {
-        val cat = Category(name = "Foo")
-        cat.create()
-        expectList(cat) { db { CATEGORY.dao.findAll().toList() } }
+    group("create()") {
+        test("simple") {
+            val cat = Category(name = "Foo")
+            cat.create()
+            expectList(cat) { db { CATEGORY.dao.findAll().toList() } }
+        }
+        test("create() works with pre-assigned IDs") {
+            val cat = Category(id = 1L, name = "Foo")
+            cat.create()
+            expect(1L) { cat.id }
+            expectList(cat) { db { CATEGORY.dao.findAll().toList() } }
+        }
     }
 
     group("delete") {
