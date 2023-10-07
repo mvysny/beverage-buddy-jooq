@@ -1,20 +1,17 @@
-package com.vaadin.starter.beveragebuddy.backend.jooq.tables.records
+package com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos
 
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.expectList
 import com.vaadin.starter.beveragebuddy.backend.dao
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Review
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
-import com.vaadin.starter.beveragebuddy.backend.simplejooq.isValid
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.single
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import java.time.LocalDate
 import kotlin.test.expect
 
-class CategoryRecordTest : DynaTest({
+class CategoryTest : DynaTest({
     usingApp()
 
     group("validation") {
@@ -49,7 +46,13 @@ class CategoryRecordTest : DynaTest({
         test("deleting category fixes foreign keys") {
             val cat = Category(name = "Foo")
             cat.create()
-            val review = Review(name = "Foo", score = 1, date = LocalDate.now(), category = cat.id!!, count = 1)
+            val review = Review(
+                name = "Foo",
+                score = 1,
+                date = LocalDate.now(),
+                category = cat.id!!,
+                count = 1
+            )
             review.create()
 
             cat.delete()
