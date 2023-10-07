@@ -37,6 +37,28 @@ interface ActivePojo<R : UpdatableRecord<R>, THIS : Any, ID : Any> {
         check(isPersistent) { "ID has not been filled into the POJO" }
     }
 
+    /**
+     * Creates a new row in a database (if `id` is null) or updates the row in a database (if `id` is not null).
+     * When creating, this method simply calls the [create] method.
+     *
+     * It is expected that the database will generate an `id` for us (by sequences,
+     * `auto_increment` or other means). That generated ID is then automatically stored into the `id` field.
+     *
+     * The bean is validated first, by calling [validate].
+     * You can bypass this by setting the `validate` parameter to false, but that's not
+     * recommended.
+     *
+     * **WARNING**: if your entity has pre-provided (natural) IDs, you must not call
+     * this method with the intent to insert the entity into the database - this method will always run UPDATE and then
+     * fail (since nothing has been updated since the row is not in the database yet).
+     * To force create the database row, call [create].
+     *
+     * **INFO**: Entities with IDs created by the application can be made to work properly, by overriding [create]
+     * and [create] method accordingly.
+     *
+     * @throws IllegalStateException if the database didn't provide a new ID (upon new row creation),
+     * or if there was no row (if `id` was not null).
+     */
     fun save(validate: Boolean = true) {
         if (!isPersistent) {
             create(validate)
