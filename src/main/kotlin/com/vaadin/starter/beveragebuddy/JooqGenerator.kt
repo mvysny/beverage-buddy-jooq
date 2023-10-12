@@ -36,6 +36,9 @@ object JooqGenerator {
                         Generate()
                             .withValidationAnnotations(true)
                             .withDaos(true)
+                            .withPojos(true)
+                            .withPojosEqualsAndHashCode(false) // no need to generate this for kotlin data classes
+                            .withPojosToString(false) // no need to generate this for kotlin data classes
                     ).withTarget(
                         Target()
                             .withPackageName("com.vaadin.starter.beveragebuddy.backend.jooq")
