@@ -25,7 +25,7 @@ fun Request.accept(contentType: ContentType): Request =
 
 fun Request.acceptJson(): Request = accept(ContentType.APPLICATION_JSON)
 
-class PersonRestClient() {
+class PersonRestClient {
     private val client: HttpHandler = ClientFilters.FollowRedirects()
         .then(CheckOk)
         .then(RestService.app)
