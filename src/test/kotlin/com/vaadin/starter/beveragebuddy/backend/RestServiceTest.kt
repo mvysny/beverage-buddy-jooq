@@ -17,14 +17,13 @@ import org.http4k.filter.ClientFilters
 import java.io.FileNotFoundException
 import java.io.IOException
 
-fun Response.checkOk(): Response {
+fun Response.checkOk() {
     if (!status.successful) {
         if (status.code == 404) throw FileNotFoundException(this.toMessage())
         throw IOException(this.toMessage())
     }
-    return this
 }
-val CheckOk = Filter { next -> { next(it).checkOk() } }
+val CheckOk = Filter { next -> { next(it).apply { checkOk() } } }
 
 /**
  * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
