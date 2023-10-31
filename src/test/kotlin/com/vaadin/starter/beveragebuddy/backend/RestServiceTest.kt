@@ -2,6 +2,7 @@ package com.vaadin.starter.beveragebuddy.backend
 
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.expectList
+import com.github.mvysny.dynatest.expectThrows
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
@@ -14,11 +15,15 @@ import java.io.IOException
 private fun Response.checkOk(request: Request) {
     if (!status.successful) {
         val msg = "$request ====> $this"
+        close() // close the streams in case of StreamResponse
         if (status.code == 404) throw FileNotFoundException(msg)
         throw IOException(msg)
     }
 }
 
+/**
+ * Makes sure that the [Response]'s code is 200..299. Fails with an exception if it's not.
+ */
 val CheckOk = Filter { next -> { next(it).apply { checkOk(it) } } }
 
 fun Request.accept(contentType: ContentType): Request =
@@ -35,6 +40,11 @@ class PersonRestClient {
     fun getAllCategories(): List<Category> {
         val request = Request(Method.GET, "categories").acceptJson()
         return client(request).use { it.body.jsonArray<Category>(gson) }
+    }
+
+    fun nonexistingEndpoint() {
+        val request = Request(Method.GET, "foo").acceptJson()
+        client(request).use { }
     }
 }
 
@@ -53,5 +63,10 @@ class RestServiceTest : DynaTest({
     test("one category") {
         db { CATEGORY.dao.insert(Category(name = "Foo")) }
         expectList("Foo") { client.getAllCategories().map { it.name } }
+    }
+    test("404") {
+        expectThrows<FileNotFoundException> {
+            client.nonexistingEndpoint()
+        }
     }
 })
