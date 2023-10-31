@@ -36,7 +36,7 @@ class PersonRestClient(baseUrl: String) {
         .then(ClientFilters.FollowRedirects())
         .then(CheckOk)
         .then(JavaHttpClient(responseBodyMode = BodyMode.Stream))
-    private val gson = GsonBuilder().registerJavaTimeAdapters().create()
+    private val gson = RestService.gson
 
     fun getAllCategories(): List<Category> {
         val request = Request(Method.GET, "categories").acceptJson()
@@ -53,7 +53,7 @@ fun DynaNodeGroup.usingJavalin() {
         val ctx = WebAppContext()
         // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
         ctx.baseResource = ctx.resourceFactory.newClassLoaderResource("java/lang/String.class")
-        ctx.addServlet(JavalinRestServlet::class.java, "/rest/*")
+        ctx.addServlet(RestServlet::class.java, "/rest/*")
         server = Server(9876)
         server.handler = ctx
         server.start()

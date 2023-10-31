@@ -60,11 +60,7 @@ dependencies {
 //    implementation("org.jooq:jooq-codegen:${properties["jooqVersion"]}")
 
     // REST
-    api("io.javalin:javalin:${properties["javalin_version"]}") {
-        exclude(group = "org.eclipse.jetty")
-        exclude(group = "org.eclipse.jetty.websocket")
-        exclude(group = "com.fasterxml.jackson.core")
-    }
+    implementation("org.http4k:http4k-core:5.9.0.0")
     // workaround for https://github.com/google/gson/issues/1059
     implementation("com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1")
 
@@ -72,7 +68,6 @@ dependencies {
     testImplementation("com.github.mvysny.kaributesting:karibu-testing-v24:2.1.0")
     testImplementation("com.github.mvysny.dynatest:dynatest:0.24")
     testImplementation("com.gitlab.mvysny.apache-uribuilder:uribuilder:5.2.1")
-    testImplementation("org.http4k:http4k-core:5.9.0.0")
 }
 
 tasks.withType<KotlinCompile> {
