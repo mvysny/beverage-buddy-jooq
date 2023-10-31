@@ -23,8 +23,8 @@ object RestService {
         .body(gson.toJson(json))
 
     val app: RoutingHttpHandler = routes(
-        "rest/categories" bind GET to { Response(OK).json(db { CATEGORY.dao.findAll() }) }
-    )
+        "categories" bind GET to { Response(OK).json(db { CATEGORY.dao.findAll() }) }
+    ).withBasePath("rest")
 }
 
 /**
