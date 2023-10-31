@@ -17,8 +17,12 @@ fun Response.checkOk() {
         throw IOException(this.toMessage())
     }
 }
+
 val CheckOk = Filter { next -> { next(it).apply { checkOk() } } }
-fun Request.accept(contentType: ContentType): Request = header("Accept", contentType.toHeaderValue())
+
+fun Request.accept(contentType: ContentType): Request =
+    header("Accept", contentType.toHeaderValue())
+
 fun Request.acceptJson(): Request = accept(ContentType.APPLICATION_JSON)
 
 class PersonRestClient() {
@@ -29,9 +33,7 @@ class PersonRestClient() {
 
     fun getAllCategories(): List<Category> {
         val request = Request(Method.GET, "rest/categories").acceptJson()
-        return client(request).use {
-            it.body.jsonArray<Category>(gson)
-        }
+        return client(request).use { it.body.jsonArray<Category>(gson) }
     }
 }
 
