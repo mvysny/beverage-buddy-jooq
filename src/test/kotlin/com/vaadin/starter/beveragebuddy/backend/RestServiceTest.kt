@@ -4,7 +4,6 @@ import com.github.mvysny.dynatest.DynaNodeGroup
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.DynaTestDsl
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
-import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.usingApp
@@ -35,7 +34,7 @@ fun DynaNodeGroup.usingJavalin() {
     beforeGroup {
         val ctx = WebAppContext()
         // This used to be EmptyResource, but it got removed in Jetty 12. Let's use some dummy resource instead.
-        ctx.baseResource = ctx.resourceFactory.newClassPathResource("java/lang/String.class")
+        ctx.baseResource = ctx.resourceFactory.newClassLoaderResource("java/lang/String.class")
         ctx.addServlet(JavalinRestServlet::class.java, "/rest/*")
         server = Server(9876)
         server.handler = ctx
