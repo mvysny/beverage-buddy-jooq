@@ -27,10 +27,6 @@ val CheckOk = Filter { next -> { next(it).apply { checkOk() } } }
 fun Request.accept(contentType: ContentType): Request = header("ACCEPT", contentType.toHeaderValue())
 fun Request.acceptJson(): Request = accept(ContentType.APPLICATION_JSON)
 
-/**
- * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
- * [vok-rest-client](https://github.com/mvysny/vaadin-on-kotlin/tree/master/vok-rest-client) module for more details.
- */
 class PersonRestClient(baseUrl: String) {
     private val client: HttpHandler = ClientFilters.SetBaseUriFrom(Uri.of(baseUrl))
         .then(ClientFilters.FollowRedirects())
