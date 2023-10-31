@@ -3,13 +3,18 @@ package com.vaadin.starter.beveragebuddy.backend
 import com.github.mvysny.dynatest.DynaNodeGroup
 import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.dynatest.DynaTestDsl
+import com.github.mvysny.dynatest.expectList
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.usingApp
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
-import java.net.http.HttpClient
+import org.http4k.client.JavaHttpClient
+import org.http4k.core.*
+import org.http4k.filter.ClientFilters
 import kotlin.test.expect
 
 /**
@@ -20,10 +25,15 @@ class PersonRestClient(val baseUrl: String) {
     init {
         require(!baseUrl.endsWith("/")) { "$baseUrl must not end with a slash" }
     }
-    private val client: HttpClient = HttpClient.newHttpClient()
-    fun getAllCategories(): String {
-        val request = "$baseUrl/categories".buildUrl().buildRequest()
-        return client.exec(request) { response -> response.body().reader().readText() }
+    private val client: HttpHandler = ClientFilters.SetBaseUriFrom(Uri.of(baseUrl)).then(JavaHttpClient())
+    private val gson = GsonBuilder().registerJavaTimeAdapters().create()
+    fun getAllCategoriesAsString(): String {
+        val request = Request(Method.GET, "categories")
+        return client(request).use { it.bodyString() }
+    }
+    fun getAllCategories(): List<Category> {
+        val request = Request(Method.GET, "categories")
+        return client(request).use { it.body.jsonArray<Category>(gson) }
     }
 }
 
@@ -54,11 +64,11 @@ class RestServiceTest : DynaTest({
     beforeEach { client = PersonRestClient("http://localhost:9876/rest") }
 
     test("categories smoke test") {
-        expect("[]") { client.getAllCategories() }
+        expectList() { client.getAllCategories() }
     }
     test("one category") {
         db { CATEGORY.dao.insert(Category(name = "Foo")) }
-        expectMatch("""\[\{"id":.+,"name":"Foo"}]""".toRegex()) { client.getAllCategories() }
+        expectMatch("""\[\{"id":.+,"name":"Foo"}]""".toRegex()) { client.getAllCategoriesAsString() }
     }
 })
 

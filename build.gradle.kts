@@ -72,6 +72,7 @@ dependencies {
     testImplementation("com.github.mvysny.kaributesting:karibu-testing-v24:2.1.0")
     testImplementation("com.github.mvysny.dynatest:dynatest:0.24")
     testImplementation("com.gitlab.mvysny.apache-uribuilder:uribuilder:5.2.1")
+    testImplementation("org.http4k:http4k-core:5.9.0.0")
 }
 
 tasks.withType<KotlinCompile> {

@@ -34,7 +34,7 @@ class JavalinRestServlet : HttpServlet() {
     }
 }
 
-private fun GsonBuilder.registerJavaTimeAdapters(): GsonBuilder = apply {
+fun GsonBuilder.registerJavaTimeAdapters(): GsonBuilder = apply {
     Converters.registerAll(this)
 }
 
