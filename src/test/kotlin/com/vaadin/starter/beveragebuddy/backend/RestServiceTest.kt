@@ -7,7 +7,6 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.usingApp
-import eu.vaadinonkotlin.restclient.*
 import org.eclipse.jetty.ee10.webapp.WebAppContext
 import org.eclipse.jetty.server.Server
 import java.net.http.HttpClient
