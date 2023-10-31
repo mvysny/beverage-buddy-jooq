@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.starter.beveragebuddy.Bootstrap
 import com.vaadin.starter.beveragebuddy.backend.*
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
+import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Review
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.records.CategoryRecord
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.REVIEW
@@ -19,6 +20,7 @@ import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.deleteAll
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoriesList
 import com.vaadin.starter.beveragebuddy.ui.categories.CategoryRow
+import java.time.LocalDate
 import kotlin.test.expect
 
 // since there is no servlet environment, Flow won't auto-detect the @Routes. We need to auto-discover all @Routes
@@ -109,5 +111,22 @@ class CategoriesListTest : DynaTest({
         expectList() { db { CATEGORY.dao.findAll().toList() } }
         _get<Grid<CategoryRecord>>().expectRows(0)
         expectNotifications("Category successfully deleted.")
+    }
+
+    test("delete existing category via context menu clears the category in review") {
+        val cat = Category(name = "Beers")
+        cat.create()
+        val review = Review(name = "Foo", score = 1, date = LocalDate.now(), category = cat.id!!, count = 1)
+        review.create()
+
+        val grid = _get<Grid<CategoryRow>>()
+        grid.expectRow(0, "Beers", "1", "Button[text='Edit', icon='vaadin:edit', @class='category__edit', @theme='tertiary']")
+        _get<CategoriesList>().gridContextMenu._clickItemWithCaption("Delete", CategoryRow(CategoryRecord(cat), 0))
+
+        // check that the category has been deleted in the database.
+        expectList() { db { CATEGORY.dao.findAll().toList() } }
+        _get<Grid<CategoryRecord>>().expectRows(0)
+        expectNotifications("Category successfully deleted.")
+        expectList(review.copy(category = null)) { db { REVIEW.dao.findAll().toList() }}
     }
 })

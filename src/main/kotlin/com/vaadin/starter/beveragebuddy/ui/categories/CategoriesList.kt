@@ -116,13 +116,7 @@ class CategoriesList : KComposite() {
     }
 
     private fun deleteCategory(row: CategoryRow) {
-        db {
-            create.update(REVIEW)
-                .setNull(REVIEW.CATEGORY)
-                .where(REVIEW.CATEGORY.eq(row.category.id!!))
-                .execute()
-            db { CATEGORY.dao.deleteById(row.category.id!!) }
-        }
+        db { CATEGORY.dao.deleteById(row.category.id!!) }
         Notification.show("Category successfully deleted.", 3000, Notification.Position.BOTTOM_START)
         updateView()
     }
