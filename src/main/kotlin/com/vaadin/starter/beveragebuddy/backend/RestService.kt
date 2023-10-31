@@ -26,7 +26,7 @@ object RestService {
 
     val app: RoutingHttpHandler = routes(
         "categories" bind GET to { Response(OK).json(db { CATEGORY.dao.findAll() }) }
-    ).withBasePath("rest")
+    )
 }
 
 /**
@@ -38,7 +38,7 @@ object RestService {
     asyncSupported = false
 )
 class RestServlet : HttpServlet() {
-    private val adapter = Http4kJakartaServletAdapter(RestService.app)
+    private val adapter = Http4kJakartaServletAdapter(RestService.app.withBasePath("rest"))
     override fun service(req: HttpServletRequest, resp: HttpServletResponse) =
         adapter.handle(req, resp)
 }

@@ -11,14 +11,15 @@ import org.http4k.filter.ClientFilters
 import java.io.FileNotFoundException
 import java.io.IOException
 
-fun Response.checkOk() {
+private fun Response.checkOk(request: Request) {
     if (!status.successful) {
-        if (status.code == 404) throw FileNotFoundException(this.toMessage())
-        throw IOException(this.toMessage())
+        val msg = "$request ====> $this"
+        if (status.code == 404) throw FileNotFoundException(msg)
+        throw IOException(msg)
     }
 }
 
-val CheckOk = Filter { next -> { next(it).apply { checkOk() } } }
+val CheckOk = Filter { next -> { next(it).apply { checkOk(it) } } }
 
 fun Request.accept(contentType: ContentType): Request =
     header("Accept", contentType.toHeaderValue())
@@ -32,7 +33,7 @@ class PersonRestClient {
     private val gson = RestService.gson
 
     fun getAllCategories(): List<Category> {
-        val request = Request(Method.GET, "rest/categories").acceptJson()
+        val request = Request(Method.GET, "categories").acceptJson()
         return client(request).use { it.body.jsonArray<Category>(gson) }
     }
 }
