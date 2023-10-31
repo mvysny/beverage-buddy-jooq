@@ -24,6 +24,8 @@ fun Response.checkOk() {
     }
 }
 val CheckOk = Filter { next -> { next(it).apply { checkOk() } } }
+fun Request.accept(contentType: ContentType): Request = header("ACCEPT", contentType.toHeaderValue())
+fun Request.acceptJson(): Request = accept(ContentType.APPLICATION_JSON)
 
 /**
  * Uses the VoK `vok-rest-client` module for help with testing of the REST endpoints. See docs on the
@@ -37,7 +39,7 @@ class PersonRestClient(baseUrl: String) {
     private val gson = GsonBuilder().registerJavaTimeAdapters().create()
 
     fun getAllCategories(): List<Category> {
-        val request = Request(Method.GET, "categories")
+        val request = Request(Method.GET, "categories").acceptJson()
         return client(request).use {
             it.body.jsonArray<Category>(gson)
         }
