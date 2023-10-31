@@ -6,7 +6,7 @@
 
 This is a [Vaadin](https://vaadin.com/) example application.
 A full-stack app: uses the H2 database instead of a dummy service; uses [JOOQ](https://www.jooq.org/)
-to access the database. Requires Java 17+. Does not run on Spring.
+to access the database. Requires Java 21+. Does not run on Spring.
 
 The Starter demonstrates the core Vaadin Flow concepts:
 * [Building UIs in Kotlin](https://github.com/mvysny/karibu-dsl) with components

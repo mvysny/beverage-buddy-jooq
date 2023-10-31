@@ -20,9 +20,10 @@ import org.http4k.servlet.jakarta.Http4kJakartaServletAdapter
 
 object RestService {
     val gson: Gson = GsonBuilder().registerJavaTimeAdapters().create()
-    private fun Response.json(json: Any): Response =
+
+    private fun Response.json(obj: Any): Response =
         header("Content-Type", ContentType.APPLICATION_JSON.toHeaderValue())
-            .body(gson.toJson(json))
+            .body(gson.toJsonAsync(obj))
 
     val app: RoutingHttpHandler = routes(
         "categories" bind GET to { Response(OK).json(db { CATEGORY.dao.findAll() }) }
