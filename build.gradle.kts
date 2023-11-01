@@ -17,7 +17,7 @@ val jooqVersion: String by extra
 
 plugins {
     kotlin("jvm") version "1.9.20"
-    id("application")
+    application
     id("com.vaadin")
 }
 
