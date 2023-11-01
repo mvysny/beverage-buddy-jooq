@@ -5,11 +5,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // Original project: https://github.com/vaadin/beverage-starter-flow
 
 buildscript {
+    val vaadinVersion: String by extra
     // fix for https://github.com/mvysny/vaadin-boot-example-gradle/issues/3
     dependencies {
-        classpath("com.vaadin:vaadin-prod-bundle:${project.properties["vaadinVersion"]}")
+        classpath("com.vaadin:vaadin-prod-bundle:$vaadinVersion")
     }
 }
+
+val vaadinVersion: String by extra
+val jooqVersion: String by extra
 
 plugins {
     kotlin("jvm") version "1.9.10"
@@ -35,7 +39,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     // Vaadin
-    implementation("com.vaadin:vaadin-core:${properties["vaadinVersion"]}") {
+    implementation("com.vaadin:vaadin-core:$vaadinVersion") {
         afterEvaluate {
             if (vaadin.productionMode) {
                 exclude(module = "vaadin-dev")
@@ -54,7 +58,7 @@ dependencies {
     // db
     implementation("org.flywaydb:flyway-core:9.22.1")
     implementation("com.h2database:h2:2.2.224") // remove this and replace it with a database driver of your choice.
-    implementation("org.jooq:jooq:${properties["jooqVersion"]}")
+    implementation("org.jooq:jooq:$jooqVersion")
     // uncomment to enable JooqGenerator
 //    implementation("org.jooq:jooq-meta:${properties["jooqVersion"]}")
 //    implementation("org.jooq:jooq-codegen:${properties["jooqVersion"]}")
@@ -79,5 +83,5 @@ java {
 }
 
 application {
-    mainClass.set("com.vaadin.starter.beveragebuddy.MainKt")
+    mainClass = "com.vaadin.starter.beveragebuddy.MainKt"
 }
