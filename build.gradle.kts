@@ -4,14 +4,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // The Beverage Buddy sample project ported to Kotlin.
 // Original project: https://github.com/vaadin/beverage-starter-flow
 
-buildscript {
-    val vaadinVersion: String by extra
-    // fix for https://github.com/mvysny/vaadin-boot-example-gradle/issues/3
-    dependencies {
-        classpath("com.vaadin:vaadin-prod-bundle:$vaadinVersion")
-    }
-}
-
 val vaadinVersion: String by extra
 val jooqVersion: String by extra
 
