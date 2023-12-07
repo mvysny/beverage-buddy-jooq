@@ -8,7 +8,7 @@ val vaadinVersion: String by extra
 val jooqVersion: String by extra
 
 plugins {
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "1.9.21"
     application
     id("com.vaadin")
 }
@@ -22,7 +22,7 @@ repositories {
 tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
-        // to see the exceptions of failed tests in Travis-CI console.
+        // to see the exception stacktraces of failed tests in the CI console
         exceptionFormat = TestExceptionFormat.FULL
     }
 }
@@ -39,7 +39,7 @@ dependencies {
         }
     }
     implementation("com.github.mvysny.karibudsl:karibu-dsl-v23:2.1.0")
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:12.1")
+    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:12.2")
 
     implementation("com.zaxxer:HikariCP:5.0.1")
 
@@ -58,7 +58,7 @@ dependencies {
     // REST
     implementation("org.http4k:http4k-core:5.9.0.0")
     // workaround for https://github.com/google/gson/issues/1059
-    implementation("com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.1")
+    implementation("com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2")
 
     // testing
     testImplementation("com.github.mvysny.kaributesting:karibu-testing-v24:2.1.0")
