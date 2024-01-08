@@ -6,7 +6,12 @@ import org.jooq.UpdatableRecord
 import org.jooq.impl.DAOImpl
 
 /**
- * An Active POJO: it is able to perform basic CRUD operations.
+ * An Active POJO: it is able to perform basic CRUD operations easily,
+ * via [create], [save] and [delete].
+ *
+ * It's also able to validate itself via the [validate] function. It uses the standardized
+ * JSR303 `jakarta.validation`, which means that the POJOs are directly compatible with
+ * Vaadin's BeanValidationBinder.
  */
 interface ActivePojo<R : UpdatableRecord<R>, THIS : Any, ID : Any> {
     /**
