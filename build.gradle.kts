@@ -60,6 +60,7 @@ dependencies {
     // testing
     testImplementation(libs.karibu.testing)
     testImplementation(libs.dynatest)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.withType<KotlinCompile> {
