@@ -15,7 +15,7 @@ junit-jupiter-engine = "org.junit.jupiter:junit-jupiter-engine:5.9.3"
 junit-platform-launcher = "org.junit.platform:junit-platform-launcher:1.9.3"
 karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.1.2"
 karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.1.2"
-flyway = "org.flywaydb:flyway-core:9.22.1"
+flyway = "org.flywaydb:flyway-core:9.22.3"
 h2 = "com.h2database:h2:2.2.224"
 jooq-jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 jooq-meta = { module = "org.jooq:jooq-meta", version.ref = "jooq" }
