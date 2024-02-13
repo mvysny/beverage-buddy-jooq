@@ -1,16 +1,14 @@
+import com.vaadin.gradle.getBooleanProperty
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // The Beverage Buddy sample project ported to Kotlin.
 // Original project: https://github.com/vaadin/beverage-starter-flow
 
-val vaadinVersion: String by extra
-val jooqVersion: String by extra
-
 plugins {
     kotlin("jvm") version "1.9.22"
     application
-    id("com.vaadin")
+    alias(libs.plugins.vaadin)
 }
 
 defaultTasks("clean", "build")
@@ -31,38 +29,37 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     // Vaadin
-    implementation("com.vaadin:vaadin-core:$vaadinVersion") {
-        afterEvaluate {
-            if (vaadin.productionMode.get()) {
-                exclude(module = "vaadin-dev")
-            }
+    implementation(libs.vaadin.core) {
+        // https://github.com/vaadin/flow/issues/18572
+        if (vaadin.productionMode.map { v -> getBooleanProperty("vaadin.productionMode") ?: v }.get()) {
+            exclude(module = "vaadin-dev")
         }
     }
-    implementation("com.github.mvysny.karibudsl:karibu-dsl-v23:2.1.0")
-    implementation("com.github.mvysny.vaadin-boot:vaadin-boot:12.2")
+    implementation(libs.karibu.dsl)
+    implementation(libs.vaadin.boot)
 
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation(libs.hikaricp)
 
     // logging
     // currently we are logging through the SLF4J API to SLF4J-Simple. See src/main/resources/simplelogger.properties file for the logger configuration
-    implementation("org.slf4j:slf4j-simple:2.0.7")
+    implementation(libs.slf4j.simple)
 
     // db
-    implementation("org.flywaydb:flyway-core:9.22.1")
-    implementation("com.h2database:h2:2.2.224") // remove this and replace it with a database driver of your choice.
-    implementation("org.jooq:jooq:$jooqVersion")
+    implementation(libs.flyway)
+    implementation(libs.h2) // remove this and replace it with a database driver of your choice.
+    implementation(libs.jooq.jooq)
     // uncomment to enable JooqGenerator
-//    implementation("org.jooq:jooq-meta:${properties["jooqVersion"]}")
-//    implementation("org.jooq:jooq-codegen:${properties["jooqVersion"]}")
+//    implementation(libs.jooq.meta)
+//    implementation(libs.jooq.codegen)
 
     // REST
-    implementation("org.http4k:http4k-core:5.9.0.0")
+    implementation(libs.http4k)
     // workaround for https://github.com/google/gson/issues/1059
-    implementation("com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2")
+    implementation(libs.gson.javatime)
 
     // testing
-    testImplementation("com.github.mvysny.kaributesting:karibu-testing-v24:2.1.0")
-    testImplementation("com.github.mvysny.dynatest:dynatest:0.24")
+    testImplementation(libs.karibu.testing)
+    testImplementation(libs.dynatest)
 }
 
 tasks.withType<KotlinCompile> {
