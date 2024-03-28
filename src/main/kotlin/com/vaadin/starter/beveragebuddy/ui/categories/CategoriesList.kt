@@ -99,7 +99,7 @@ class CategoriesList : KComposite() {
             icon = Icon(VaadinIcon.EDIT)
             addClassName("category__edit")
             addThemeVariants(ButtonVariant.LUMO_TERTIARY)
-            onLeftClick { edit(row) }
+            onClick { edit(row) }
         }
 
     private fun edit(row: CategoryRow) {
