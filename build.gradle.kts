@@ -1,5 +1,6 @@
 import com.vaadin.gradle.getBooleanProperty
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 // The Beverage Buddy sample project ported to Kotlin.
@@ -63,7 +64,7 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+    compilerOptions.jvmTarget = JvmTarget.JVM_17
 }
 
 java {
