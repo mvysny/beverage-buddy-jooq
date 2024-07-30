@@ -7,10 +7,12 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.usingApp
+import org.http4k.asString
 import org.http4k.core.*
 import org.http4k.filter.ClientFilters
 import java.io.FileNotFoundException
 import java.io.IOException
+import kotlin.test.expect
 
 private fun Response.checkOk(request: Request) {
     if (!status.successful) {
@@ -41,6 +43,10 @@ class PersonRestClient {
         val request = Request(Method.GET, "categories").acceptJson()
         return client(request).use { it.body.jsonArray<Category>(gson) }
     }
+    fun getAllCategoriesString(): String {
+        val request = Request(Method.GET, "categories").acceptJson()
+        return client(request).use { it.body.payload.asString() }
+    }
 
     fun nonexistingEndpoint() {
         val request = Request(Method.GET, "foo").acceptJson()
@@ -59,10 +65,12 @@ class RestServiceTest : DynaTest({
 
     test("categories smoke test") {
         expectList() { client.getAllCategories() }
+        expect("[]") { client.getAllCategoriesString() }
     }
     test("one category") {
         db { CATEGORY.dao.insert(Category(name = "Foo")) }
         expectList("Foo") { client.getAllCategories().map { it.name } }
+        expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategoriesString() }
     }
     test("404") {
         expectThrows<FileNotFoundException> {
