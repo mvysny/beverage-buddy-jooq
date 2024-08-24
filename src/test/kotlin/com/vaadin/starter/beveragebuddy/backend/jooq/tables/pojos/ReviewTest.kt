@@ -1,12 +1,13 @@
 package com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos
 
-import com.github.mvysny.dynatest.DynaTest
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import kotlin.test.expect
 
-class ReviewTest : DynaTest({
-    group("validation") {
-        test("smoke") {
+class ReviewTest {
+    @Nested inner class Validation {
+        @Test fun smoke() {
             val validPojo = Review(name = "Foo", category = 1L, score = 3, date = LocalDate.now(), count = 5)
             expect(true) { validPojo.isValid }
             expect(false) { Review().isValid }
@@ -16,4 +17,4 @@ class ReviewTest : DynaTest({
             expect(false) { validPojo.copy().apply { score = 10 }.isValid }
         }
     }
-})
+}

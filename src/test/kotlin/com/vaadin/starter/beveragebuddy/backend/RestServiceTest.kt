@@ -1,15 +1,16 @@
 package com.vaadin.starter.beveragebuddy.backend
 
-import com.github.mvysny.dynatest.DynaTest
-import com.github.mvysny.dynatest.expectList
-import com.github.mvysny.dynatest.expectThrows
+import com.github.mvysny.kaributesting.v10.expectList
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.references.CATEGORY
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
-import com.vaadin.starter.beveragebuddy.ui.usingApp
+import com.vaadin.starter.beveragebuddy.ui.AbstractAppTest
 import org.http4k.asString
 import org.http4k.core.*
 import org.http4k.filter.ClientFilters
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.test.expect
@@ -57,24 +58,22 @@ class PersonRestClient {
 /**
  * The REST test.
  */
-class RestServiceTest : DynaTest({
-    usingApp()
+class RestServiceTest : AbstractAppTest() {
+    private lateinit var client: PersonRestClient
+    @BeforeEach fun createClient() { client = PersonRestClient() }
 
-    lateinit var client: PersonRestClient
-    beforeEach { client = PersonRestClient() }
-
-    test("categories smoke test") {
+    @Test fun `categories smoke test`() {
         expectList() { client.getAllCategories() }
         expect("[]") { client.getAllCategoriesString() }
     }
-    test("one category") {
+    @Test fun `one category`() {
         db { CATEGORY.dao.insert(Category(name = "Foo")) }
         expectList("Foo") { client.getAllCategories().map { it.name } }
         expect("""[{"id":10,"name":"Foo"}]""") { client.getAllCategoriesString() }
     }
-    test("404") {
-        expectThrows<FileNotFoundException> {
+    @Test fun `404`() {
+        assertThrows<FileNotFoundException> {
             client.nonexistingEndpoint()
         }
     }
-})
+}
