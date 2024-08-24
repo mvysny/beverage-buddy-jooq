@@ -59,7 +59,7 @@ dependencies {
 
     // testing
     testImplementation(libs.karibu.testing)
-    testImplementation(libs.dynatest)
+    testImplementation(libs.junit)
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 

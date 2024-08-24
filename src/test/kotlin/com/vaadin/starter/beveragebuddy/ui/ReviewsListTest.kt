@@ -1,6 +1,5 @@
 package com.vaadin.starter.beveragebuddy.ui
 
-import com.github.mvysny.dynatest.DynaTest
 import com.github.mvysny.kaributesting.v10._click
 import com.github.mvysny.kaributesting.v10._expectNone
 import com.github.mvysny.kaributesting.v10._expectOne
@@ -13,17 +12,15 @@ import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Category
 import com.vaadin.starter.beveragebuddy.backend.jooq.tables.pojos.Review
 import com.vaadin.starter.beveragebuddy.backend.simplejooq.db
 import com.vaadin.starter.beveragebuddy.ui.reviews.ReviewRow
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class ReviewsListTest : DynaTest({
-
-    usingApp()
-
-    test("no reviews initially") {
+class ReviewsListTest : AbstractAppTest() {
+    @Test fun `no reviews initially`() {
         _get<VirtualList<ReviewRow>>().expectRows(0)
     }
 
-    test("reviews listed") {
+    @Test fun `reviews listed`() {
         // prepare testing data
         val cat = Category(name = "Beers")
         cat.create()
@@ -31,7 +28,7 @@ class ReviewsListTest : DynaTest({
         _get<VirtualList<ReviewRow>>().expectRows(1)
     }
 
-    test("'new review' smoke test") {
+    @Test fun `'new review' smoke test`() {
         UI.getCurrent().navigate("")
         _get<Button> { text = "New review (Alt+N)" }._click()
 
@@ -43,4 +40,4 @@ class ReviewsListTest : DynaTest({
 
         _expectNone<EditorDialogFrame<*>>()
     }
-})
+}
