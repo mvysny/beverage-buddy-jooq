@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // Original project: https://github.com/vaadin/beverage-starter-flow
 
 plugins {
-    kotlin("jvm") version "2.0.10"
+    kotlin("jvm") version "2.0.20"
     application
     alias(libs.plugins.vaadin)
 }
@@ -60,7 +60,7 @@ dependencies {
     // testing
     testImplementation(libs.karibu.testing)
     testImplementation(libs.dynatest)
-    testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks.withType<KotlinCompile> {
