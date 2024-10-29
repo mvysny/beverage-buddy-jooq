@@ -60,7 +60,7 @@ dependencies {
     // testing
     testImplementation(libs.karibu.testing)
     testImplementation(libs.junit)
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<KotlinCompile> {
