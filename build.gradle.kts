@@ -70,9 +70,10 @@ tasks.withType<KotlinCompile> {
 java {
     sourceCompatibility = JavaVersion.VERSION_21 // we use virtual threads: see PipedStreamUtil for more details.
     targetCompatibility = JavaVersion.VERSION_21
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21) // we use virtual threads: see PipedStreamUtil for more details.
-    }
+    // commented out: otherwise the build fails on github actions with jdk 22
+//    toolchain {
+//        languageVersion = JavaLanguageVersion.of(21) // we use virtual threads: see PipedStreamUtil for more details.
+//    }
 }
 
 application {
