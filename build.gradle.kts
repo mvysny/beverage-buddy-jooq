@@ -64,12 +64,15 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    compilerOptions.jvmTarget = JvmTarget.JVM_17
+    compilerOptions.jvmTarget = JvmTarget.JVM_21 // we use virtual threads: see PipedStreamUtil for more details.
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21 // we use virtual threads: see PipedStreamUtil for more details.
+    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21) // we use virtual threads: see PipedStreamUtil for more details.
+    }
 }
 
 application {
