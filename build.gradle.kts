@@ -1,4 +1,3 @@
-import com.vaadin.gradle.getBooleanProperty
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -7,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // Original project: https://github.com/vaadin/beverage-starter-flow
 
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
     application
     alias(libs.plugins.vaadin)
 }
