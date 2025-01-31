@@ -26,8 +26,6 @@ tasks.withType<Test> {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-
     // Vaadin
     implementation(libs.vaadin.core) {
         if (vaadin.effective.productionMode.get()) {
