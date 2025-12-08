@@ -50,7 +50,7 @@ dependencies {
 //    implementation(libs.jooq.codegen)
 
     // REST
-    implementation(libs.http4k)
+    implementation(libs.bundles.http4k)
     implementation(libs.bundles.gson)
 
     // testing
