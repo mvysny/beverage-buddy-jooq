@@ -51,8 +51,7 @@ dependencies {
 
     // REST
     implementation(libs.http4k)
-    // workaround for https://github.com/google/gson/issues/1059
-    implementation(libs.gson.javatime)
+    implementation(libs.bundles.gson)
 
     // testing
     testImplementation(libs.karibu.testing)

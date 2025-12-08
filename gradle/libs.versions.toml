@@ -20,8 +20,12 @@ jooq-meta = { module = "org.jooq:jooq-meta", version.ref = "jooq" }
 jooq-codegen = { module = "org.jooq:jooq-codegen", version.ref = "jooq" }
 # don't upgrade: https://github.com/http4k/http4k/issues/1454
 http4k = "org.http4k:http4k-core:5.47.0.0"
+gson-gson = "com.google.code.gson:gson:2.13.2"   # com.google.code.gson:gson; https://repo1.maven.org/maven2/com/google/code/gson/gson/
 gson-javatime = "com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2"
 hikaricp = "com.zaxxer:HikariCP:7.0.2"
 
 [plugins]
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }
+
+[bundles]
+gson = ["gson-gson", "gson-javatime"]   # workaround for https://github.com/google/gson/issues/1059
