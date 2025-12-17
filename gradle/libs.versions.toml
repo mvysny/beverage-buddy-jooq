@@ -1,5 +1,5 @@
 [versions]
-vaadin = "24.9.6"
+vaadin = "24.9.7"
 # https://repo1.maven.org/maven2/org/slf4j/slf4j-api/
 slf4j = "2.0.17"
 # check jooq version at https://www.jooq.org/download/
@@ -9,11 +9,11 @@ http4k = "6.23.1.0"
 [libraries]
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
-vaadin-boot = "com.github.mvysny.vaadin-boot:vaadin-boot:13.4"
+vaadin-boot = "com.github.mvysny.vaadin-boot:vaadin-boot:13.5"
 vaadin-core = { module = "com.vaadin:vaadin-core", version.ref = "vaadin" }
 junit = "org.junit.jupiter:junit-jupiter-engine:6.0.1"
 karibu-testing = "com.github.mvysny.kaributesting:karibu-testing-v24:2.4.3"
-karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.4.0"
+karibu-dsl = "com.github.mvysny.karibudsl:karibu-dsl-v23:2.5.0"
 flyway = "org.flywaydb:flyway-core:11.18.0"
 h2 = "com.h2database:h2:2.2.224"
 jooq-jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
@@ -21,7 +21,8 @@ jooq-meta = { module = "org.jooq:jooq-meta", version.ref = "jooq" }
 jooq-codegen = { module = "org.jooq:jooq-codegen", version.ref = "jooq" }
 http4k-core = { module = "org.http4k:http4k-core", version.ref = "http4k" }
 http4k-servlet = { module = "org.http4k:http4k-bridge-servlet", version.ref = "http4k" }
-gson-gson = "com.google.code.gson:gson:2.13.2"   # com.google.code.gson:gson; https://repo1.maven.org/maven2/com/google/code/gson/gson/
+# com.google.code.gson:gson; https://repo1.maven.org/maven2/com/google/code/gson/gson/
+gson-gson = "com.google.code.gson:gson:2.13.2"
 gson-javatime = "com.fatboyindustrial.gson-javatime-serialisers:gson-javatime-serialisers:1.1.2"
 hikaricp = "com.zaxxer:HikariCP:7.0.2"
 
@@ -29,5 +30,7 @@ hikaricp = "com.zaxxer:HikariCP:7.0.2"
 vaadin = { id = "com.vaadin", version.ref = "vaadin" }
 
 [bundles]
-gson = ["gson-gson", "gson-javatime"]   # workaround for https://github.com/google/gson/issues/1059
+# workaround for https://github.com/google/gson/issues/1059
+gson = ["gson-gson", "gson-javatime"]
 http4k = ["http4k-core", "http4k-servlet"]
+
