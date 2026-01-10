@@ -60,7 +60,9 @@ dependencies {
 }
 
 tasks.withType<KotlinCompile> {
-    compilerOptions.jvmTarget = JvmTarget.JVM_21 // we use virtual threads: see PipedStreamUtil for more details.
+    // we use virtual threads: see PipedStreamUtil for more details.
+    // also Vaadin 25 requires JVM 21+
+    compilerOptions.jvmTarget = JvmTarget.JVM_21
 }
 
 java {
